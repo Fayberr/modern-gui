@@ -101,6 +101,17 @@ public class PopupHost extends AbstractWidget {
     // ------------------------------------------------------------------ input
 
     /**
+     * Never a click target of its own: the host is a screen-sized layer, and 26.1's dispatch
+     * ({@code getChildAt} picks the first child that reports a hit) would otherwise route every
+     * click on empty space here, playing the vanilla press sound and stealing screen focus.
+     * Popups are fronted through {@link #handleClick} instead, which the screen calls first.
+     */
+    @Override
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        return false;
+    }
+
+    /**
      * Front-of-queue mouse handling: returns true when a popup consumed the click (the screen
      * then must not dispatch it to the widgets below). Called by FayberGuiScreen before super.
      */

@@ -130,11 +130,26 @@ public class Dropdown extends AbstractButton {
         if (this.host == null && this.open) {
             // Inline menu extends the hit area so rows are clickable.
             int count = Math.min(this.optionLabels.size(), ListPopup.MAX_VISIBLE);
-            int top = this.getY() + this.getHeight() + 2;
+            int top = this.inlineMenuTop();
             return mouseX >= this.getX() && mouseX < this.getX() + this.getWidth()
                     && mouseY >= top && mouseY < top + count * ListPopup.ROW_HEIGHT;
         }
         return false;
+    }
+
+    /**
+     * The inline menu's top edge: right below the widget, flipped above it when the window has
+     * no room below (the same rule the hosted {@link ListPopup} applies).
+     */
+    private int inlineMenuTop() {
+        int count = Math.min(this.optionLabels.size(), ListPopup.MAX_VISIBLE);
+        int height = count * ListPopup.ROW_HEIGHT + 4;
+        int below = this.getY() + this.getHeight() + 2;
+        int screenH = net.minecraft.client.Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        if (below + height > screenH - 2 && this.getY() - 2 - height >= 0) {
+            return this.getY() - 2 - height;
+        }
+        return below;
     }
 
     @Override
@@ -161,10 +176,10 @@ public class Dropdown extends AbstractButton {
         }
     }
 
-    /** Inline menu (no host): a simple list right below the widget. */
+    /** Inline menu (no host): a simple list right below the widget (above it near the floor). */
     private void extractInlineMenu(GuiGraphicsExtractor gfx, Theme theme) {
         int count = Math.min(this.optionLabels.size(), ListPopup.MAX_VISIBLE);
-        int top = this.getY() + this.getHeight() + 2;
+        int top = this.inlineMenuTop();
         Ui.shadow(gfx, this.getX(), top, this.getWidth(), count * ListPopup.ROW_HEIGHT, 6.0f, 4.0f, 3);
         Ui.roundRectBorder(gfx, this.getX(), top, this.getWidth(), count * ListPopup.ROW_HEIGHT, 6.0f,
                 theme.card, theme.cardBorderHover, 1.0f);
@@ -183,7 +198,7 @@ public class Dropdown extends AbstractButton {
 
     /** Row under the mouse in the inline menu, or -1. */
     private int inlineRowAt(double mouseY) {
-        int top = this.getY() + this.getHeight() + 2;
+        int top = this.inlineMenuTop();
         int row = (int) Math.floor((mouseY - top) / ListPopup.ROW_HEIGHT);
         return row >= 0 && row < Math.min(this.optionLabels.size(), ListPopup.MAX_VISIBLE) ? row : -1;
     }

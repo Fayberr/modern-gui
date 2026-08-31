@@ -202,11 +202,28 @@ public class TextField extends AbstractWidget {
         if (this.isActive()) {
             if (this.isMouseOver(event.x(), event.y())) {
                 this.box.setFocused(true);
-                return this.box.mouseClicked(event, doubleClick);
+                // The inner box is shorter and narrower than the card (text padding on all
+                // sides), so a click on the padding passes our hit test but is dropped by
+                // EditBox's own. Returning false there would make 26.1's container dispatch
+                // (getChildAt routes to ONE child; keyboard focus is only granted when that
+                // child returns true) withhold screen focus, so the field lights up but
+                // typing goes nowhere until a click lands inside the box. Remap the click
+                // into the box instead: exact position for real hits, nearest edge for
+                // padding clicks, and claim the click either way.
+                this.box.mouseClicked(this.intoBox(event), doubleClick);
+                return true;
             }
             this.box.setFocused(false);
         }
         return super.mouseClicked(event, doubleClick);
+    }
+
+    /** Maps a click anywhere on the card into the inner box's rectangle (the caret seeks there). */
+    private MouseButtonEvent intoBox(MouseButtonEvent event) {
+        double x = Math.clamp(event.x(),
+                this.box.getX() + 0.5, this.box.getX() + Math.max(1, this.box.getWidth()) - 0.5);
+        double y = this.box.getY() + Math.max(1, this.box.getHeight()) / 2.0;
+        return new MouseButtonEvent(x, y, event.buttonInfo());
     }
 
     @Override

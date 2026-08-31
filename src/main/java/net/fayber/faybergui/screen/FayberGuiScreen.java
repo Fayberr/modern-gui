@@ -46,19 +46,26 @@ public abstract class FayberGuiScreen extends Screen {
         return this.theme;
     }
 
-    /** The popup host; null before init. Dropdowns and friends take it as their anchor. */
+    /** The popup host; null only before init. Dropdowns and friends take it as their anchor. */
     public @Nullable PopupHost popupHost() {
         return this.popupHost;
     }
 
-    /** The screen content; the popup host is appended after this, so it draws on top. */
+    /**
+     * The screen content. Runs after the popup host exists (so widgets can capture it) but
+     * before it is added to the screen, which is what makes the host draw on top.
+     */
     protected abstract void initScreen();
 
     @Override
     protected void init() {
-        this.initScreen();
+        // The host is CREATED first so initScreen() can hand it to widgets while they build
+        // (dropdowns capture screen.popupHost() at construction time; it used to be null there,
+        // which silently pushed every dropdown into the inline fallback). It is still ADDED
+        // last, below, which is what puts its popups on top during extraction.
         this.popupHost = new PopupHost(0, 0, this.width, this.height);
         this.popupHost.theme(this.theme);
+        this.initScreen();
         this.addRenderableWidget(this.popupHost);
     }
 
