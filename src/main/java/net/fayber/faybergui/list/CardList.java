@@ -64,6 +64,8 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
     private double glideVelocity;
     /** Timestamp of the last drawn frame, for the time-normalised decay. */
     private long lastFrameMs = -1L;
+    /** True while the user is dragging the scrollbar thumb with the pointer held. */
+    private boolean draggingScrollbar;
 
     protected CardList(Minecraft mc, int width, int height, int y0, int rowWidth) {
         this(mc, width, height, y0, rowWidth, ROW_HEIGHT);
@@ -117,6 +119,65 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
     @Override
     protected double scrollRate() {
         return 2.0 * ROW_HEIGHT;
+    }
+
+    /**
+     * Owns the scrollbar strip: the custom slim thumb is drawn there, and the strip has no row in
+     * it, so 26.1's screen dispatch ({@code getChildAt} returns only the row entry under the
+     * pointer) would otherwise drop the click before it ever reaches the list and vanilla's
+     * scrollbar drag could never start. With this override the strip is the list itself, so the
+     * screen routes clicks here and the drag below runs instead.
+     */
+    @Override
+    public java.util.Optional<GuiEventListener> getChildAt(double x, double y) {
+        if (this.scrollable() && this.overScrollbar(x, y)) {
+            return java.util.Optional.of(this);
+        }
+        return super.getChildAt(x, y);
+    }
+
+    /** The scrollbar strip: the gutter band the slim thumb is drawn in, full list height. */
+    private boolean overScrollbar(double x, double y) {
+        return x >= this.scrollBarX() && x < this.getX() + this.getWidth()
+                && y >= this.getY() && y < this.getBottom();
+    }
+
+    @Override
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        if (this.scrollable() && event.button() == 0 && this.overScrollbar(event.x(), event.y())) {
+            this.draggingScrollbar = true;
+            // Grab-and-centre: the thumb jumps to the pointer, like a website scrollbar.
+            this.setScrollAmount(this.scrollForPointerY(event.y()));
+            return true;
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
+        if (this.draggingScrollbar) {
+            this.setScrollAmount(this.scrollForPointerY(event.y()));
+            return true;
+        }
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
+        this.draggingScrollbar = false;
+        return super.mouseReleased(event);
+    }
+
+    /** Maps a pointer y to the scroll amount that centres the thumb under it. */
+    private double scrollForPointerY(double pointerY) {
+        float trackTop = this.getY() + 2.0f;
+        float trackH = this.getHeight() - 4.0f;
+        float span = trackH - this.scrollerHeight();
+        if (span <= 0.0f) {
+            return 0.0;
+        }
+        double target = (pointerY - trackTop - this.scrollerHeight() / 2.0) / span;
+        return Math.clamp(target, 0.0, 1.0) * this.maxScrollAmount();
     }
 
     /**

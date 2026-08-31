@@ -75,6 +75,8 @@ public class HorizontalScrollPanel extends AbstractWidget {
     private final List<int[]> childPos = new ArrayList<>();
     /** Child a drag is currently aimed at, captured on click. */
     private AbstractWidget pressedChild;
+    /** True while the user is dragging the scrollbar thumb with the pointer held. */
+    private boolean draggingScrollbar;
 
     public HorizontalScrollPanel(int x, int y, int w, int h) {
         super(x, y, w, h, net.minecraft.network.chat.Component.empty());
@@ -199,12 +201,18 @@ public class HorizontalScrollPanel extends AbstractWidget {
     /**
      * Clicks inside the panel are forwarded to the child under the pointer (in screen coordinates
      * after the scroll offset); the panel swallows the event either way so clicks in the padding
-     * do not fall through to widgets behind it.
+     * do not fall through to widgets behind it. The scrollbar strip is the panel's own: the thumb
+     * is drawn there, and a grab starts a thumb drag (grab-and-centre) instead of reaching a child.
      */
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (!this.isMouseOver(event.x(), event.y())) {
             return false;
+        }
+        if (this.maxScroll() > 0.0 && this.overScrollbar(event.x(), event.y())) {
+            this.draggingScrollbar = true;
+            this.setScrollAmount(this.scrollForPointerX(event.x()));
+            return true;
         }
         this.pressedChild = this.childAt(event.x(), event.y());
         if (this.pressedChild != null) {
@@ -213,9 +221,31 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return true;
     }
 
-    /** Releases go to the child the press landed on (capture), or to any child under the pointer. */
+    /** The scrollbar strip: the horizontal band the thumb is drawn in, along the bottom. */
+    private boolean overScrollbar(double x, double y) {
+        float trackY = this.getY() + this.getHeight() - BAR_HEIGHT - BAR_INSET;
+        return y >= trackY - 3.0 && y < this.getY() + this.getHeight()
+                && x >= this.getX() && x < this.getX() + this.getWidth();
+    }
+
+    /** Maps a pointer x to the scroll amount that centres the thumb under it. */
+    private double scrollForPointerX(double pointerX) {
+        float trackX = this.getX() + BAR_INSET;
+        float trackW = this.getWidth() - BAR_INSET * 2.0f;
+        float thumbW = Math.max(MIN_THUMB_WIDTH,
+                trackW * (float) (this.getWidth() / (double) Math.max(1, this.contentWidth)));
+        float span = trackW - thumbW;
+        if (span <= 0.0f) {
+            return 0.0;
+        }
+        double target = (pointerX - trackX - thumbW / 2.0) / span;
+        return Math.clamp(target, 0.0, 1.0) * this.maxScroll();
+    }
+
+    /** Releases end a thumb drag first; otherwise they go to the captured child or any under the pointer. */
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
+        this.draggingScrollbar = false;
         if (this.pressedChild != null) {
             AbstractWidget child = this.pressedChild;
             this.pressedChild = null;
@@ -225,9 +255,13 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return child != null && child.mouseReleased(event);
     }
 
-    /** Drags go to the captured child, so a slider inside the panel keeps its pointer. */
+    /** Drags move the thumb while one is grabbed; otherwise they go to the captured child. */
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        if (this.draggingScrollbar) {
+            this.setScrollAmount(this.scrollForPointerX(event.x()));
+            return true;
+        }
         if (this.pressedChild != null) {
             return this.pressedChild.mouseDragged(event, deltaX, deltaY);
         }
