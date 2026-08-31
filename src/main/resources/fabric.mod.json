@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "faybergui",
+	"version": "${version}",
+	"name": "Fayber GUI",
+	"description": "A general-purpose modern GUI widget library for Minecraft mods: physical-pixel rendering, anti-aliased rounded shapes, bundled Inter font, and a broad catalog of configurable widgets (buttons, toggles, sliders, dropdowns, tabs, modals, toasts and more).",
+	"authors": [
+		"Fayber"
+	],
+	"contact": {
+		"homepage": "https://github.com/Fayberr/fayber-gui",
+		"sources": "https://github.com/Fayberr/fayber-gui"
+	},
+	"license": "LGPL-3.0-or-later",
+	"icon": "assets/faybergui/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"net.fayber.faybergui.FayberGuiClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=${loader_version}",
+		"minecraft": ">=26.1 <26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
