@@ -128,6 +128,30 @@ public class HorizontalScrollPanel extends AbstractWidget {
         this.scroll = Math.clamp(this.scroll, 0.0, this.maxScroll());
     }
 
+    /**
+     * Scrolls minimally so the child is fully inside the viewport; a no-op when it already is or
+     * when there is nothing to scroll. Instant, like every authoritative scroll change. Meant for
+     * selection-follows-content: a toolbar or tab strip in the panel calls this after the user
+     * picks a child that may sit past the clipped edge.
+     *
+     * @return true when the offset moved
+     */
+    public boolean ensureVisible(AbstractWidget child) {
+        int index = this.children.indexOf(child);
+        if (index < 0 || this.maxScroll() <= 0.0) {
+            return false;
+        }
+        int x = this.childPos.get(index)[0];
+        if (x >= this.scroll && x + child.getWidth() <= this.scroll + this.getWidth()) {
+            return false;
+        }
+        double target = x < this.scroll
+                ? x
+                : x + child.getWidth() - this.getWidth();
+        this.setScrollAmount(target);
+        return true;
+    }
+
     /** The scrollable content width in px. */
     public int getContentWidth() {
         return this.contentWidth;
