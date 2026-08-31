@@ -70,9 +70,14 @@ public class KeybindField extends AbstractButton {
     /**
      * Resolves a bind code (a GLFW keycode, or {@code MOUSE_CODE_BASE + button} for mouse binds)
      * to a human-readable name such as {@code "A"}, {@code "F5"}, {@code "L Shift"} or
-     * {@code "Mouse Left"}. Public so other widgets can render key names too.
+     * {@code "Mouse Left"}. Negative codes are the unbound sentinel and resolve to
+     * {@code "Not bound"} (what vanilla and Cloth show). Public so other widgets can render key
+     * names too.
      */
     public static String keyName(int code) {
+        if (code < 0) {
+            return "Not bound";
+        }
         if (code >= MOUSE_CODE_BASE) {
             return mouseName(code - MOUSE_CODE_BASE);
         }
@@ -223,9 +228,12 @@ public class KeybindField extends AbstractButton {
             Ui.textCentered(gfx, Ui.ui("Press a key..."),
                     this.getX() + this.getWidth() / 2, textY, this.theme.textMuted);
         } else {
-            Ui.textCentered(gfx, Ui.ui(keyName(this.getter.get())),
+            int code = this.getter.get();
+            boolean unbound = code < 0; // the unbound sentinel resolves to "Not bound" below
+            Ui.textCentered(gfx, Ui.ui(keyName(code)),
                     this.getX() + this.getWidth() / 2, textY,
-                    hovered ? this.theme.text : this.theme.textSecondary);
+                    unbound ? this.theme.textMuted
+                            : (hovered ? this.theme.text : this.theme.textSecondary));
         }
     }
 
