@@ -22,7 +22,7 @@ public final class Theme {
             0xC6000000, // scrim
             0xFF1A1A1A, 0xFF222222, 0xFF262626, 0xFF3A3A3A, // card, cardHover, cardBorder, cardBorderHover
             0xFFF0F0F0, 0xFFA3A3A3, 0xFF6E6E6E, // text, textSecondary, textMuted
-            0xFFE6E6E6, 0xFFFFFFFF, 0xFF121212, // accent, accentHover, textOnAccent
+            0xFF121212, 0xFFE6E6E6, 0xFFFFFFFF, // textOnAccent, accent, accentHover
             0xFF3A3A3A, // offTrack
             0xFF2E2E2E, 0xFF3A3A3A, 0xFF7A7A7A, 0xFF9A9A9A, // slider track/fill + hovers
             0xFF3A3A3A, 0xFF4D4D4D // scrollbar, scrollbarHover
