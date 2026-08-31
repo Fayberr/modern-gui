@@ -23,6 +23,9 @@ public class FayberGuiClient implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("Fayber GUI initialized");
 
+        // /faybergui showcase: open the widget catalog in-game (no startup flag needed).
+        ShowcaseCommand.register();
+
         // Widget catalog workbench, only ever active with -Dfaybergui.preview=true (dev runs).
         if (net.fayber.faybergui.dev.PreviewHook.enabled()) {
             net.fayber.faybergui.dev.PreviewHook.register();
