@@ -1,6 +1,6 @@
 #version 330
 
-// Anti-aliased rounded-corner quadrant for Fayber Config.
+// Anti-aliased rounded-corner quadrant for Modern GUI.
 //
 // The GUI never gives a fragment shader the rectangle's size or radius, so the geometry is
 // encoded in the UVs instead: a corner quad is blitted with texCoord0 covering one quadrant of
