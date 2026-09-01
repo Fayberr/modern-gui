@@ -38,8 +38,13 @@ public class CycleButton<T> extends AbstractButton {
     private int minWidth = 0;
     private Runnable onChange;
 
+    /**
+     * @param namer turns a value into its display text; a namer returning translatables resolves
+     *              at draw time, so a language change shows on the next click. The widget
+     *              auto-sizes to the widest label as of construction.
+     */
     public CycleButton(int x, int y, int height, Supplier<T> getter, Consumer<T> setter,
-                       T[] values, Function<T, String> namer) {
+                       T[] values, Function<T, Component> namer) {
         super(x, y, 20, height, Component.empty());
         this.getter = getter;
         this.setter = setter;

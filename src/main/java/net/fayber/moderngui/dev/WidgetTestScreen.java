@@ -85,7 +85,8 @@ public final class WidgetTestScreen extends ModernGuiScreen {
     protected void initScreen() {
         int x = this.contentX();
 
-        this.addRenderableWidget(new Tabs(x, 30, List.of("Buttons", "Inputs", "Layout"),
+        this.addRenderableWidget(new Tabs(x, 30, List.of(Component.literal("Buttons"),
+                        Component.literal("Inputs"), Component.literal("Layout")),
                 () -> tab, index -> {
                     tab = index;
                     this.rebuildWidgets();
@@ -148,9 +149,9 @@ public final class WidgetTestScreen extends ModernGuiScreen {
         this.place(List.of(
                 new CycleButton<>(x, y, 24, () -> cycleValue, v -> cycleValue = v,
                         DEMO_MODES, m -> switch (m) {
-                            case SLOW -> "Slow";
-                            case NORMAL -> "Normal";
-                            case FAST -> "Fast";
+                            case SLOW -> Component.literal("Slow");
+                            case NORMAL -> Component.literal("Normal");
+                            case FAST -> Component.literal("Fast");
                         }),
                 new SegmentedControl(x + 130, y, List.of("Alpha", "Beta"),
                         () -> segmentedIndex, v -> segmentedIndex = v)), x, y);
@@ -159,7 +160,8 @@ public final class WidgetTestScreen extends ModernGuiScreen {
         this.place(List.of(
                 new RadioGroup(x, y, List.of("One", "Two", "Three"), () -> radioIndex, v -> radioIndex = v)
                         .horizontal(),
-                new Dropdown(x + 200, y, 180, 26, List.of("Option One", "Option Two", "Option Three"),
+                new Dropdown(x + 200, y, 180, 26, List.of(Component.literal("Option One"),
+                                Component.literal("Option Two"), Component.literal("Option Three")),
                         () -> dropdownValue, v -> dropdownValue = v).host(this.popupHost())), x, y);
     }
 

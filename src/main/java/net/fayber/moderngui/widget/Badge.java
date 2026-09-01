@@ -39,16 +39,31 @@ public class Badge extends AbstractWidget {
 
     /** Soft green: "success", "synced", "enabled". */
     public static Badge success(int x, int y, String text) {
+        return success(x, y, Component.literal(text));
+    }
+
+    /** Component variant: a translatable label resolves at draw time. */
+    public static Badge success(int x, int y, Component text) {
         return new Badge(x, y, text).tint(0x229FDCA8, 0xFF9FDCA8);
     }
 
     /** Soft amber: "beta", "experimental", "pending". */
     public static Badge warning(int x, int y, String text) {
+        return warning(x, y, Component.literal(text));
+    }
+
+    /** Component variant: a translatable label resolves at draw time. */
+    public static Badge warning(int x, int y, Component text) {
         return new Badge(x, y, text).tint(0x22F7D79E, 0xFFF7D79E);
     }
 
     /** Soft red: "error", "failed", "conflict". */
     public static Badge danger(int x, int y, String text) {
+        return danger(x, y, Component.literal(text));
+    }
+
+    /** Component variant: a translatable label resolves at draw time. */
+    public static Badge danger(int x, int y, Component text) {
         return new Badge(x, y, text).tint(0x22F28B82, 0xFFF28B82);
     }
 

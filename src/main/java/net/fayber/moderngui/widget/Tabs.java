@@ -36,7 +36,7 @@ public class Tabs extends AbstractWidget {
 
     protected Theme theme = Theme.dark();
 
-    private final List<String> labels;
+    private final List<Component> labels;
     private final IntSupplier activeIndex;
     private final IntConsumer onSelect;
     private final List<Integer> tabWidths = new ArrayList<>();
@@ -55,17 +55,19 @@ public class Tabs extends AbstractWidget {
     private long lastFrameMs = -1L;
 
     /**
-     * @param labels      tab labels, in left-to-right order
+     * @param labels      tab labels, in left-to-right order; translatables resolve at draw time
      * @param activeIndex supplies the active tab index every frame (live-read)
      * @param onSelect    called with the clicked tab index
      */
-    public Tabs(int x, int y, List<String> labels, IntSupplier activeIndex, IntConsumer onSelect) {
+    public Tabs(int x, int y, List<Component> labels, IntSupplier activeIndex, IntConsumer onSelect) {
         super(x, y, 0, HEIGHT, Component.empty());
         this.labels = List.copyOf(labels);
         this.activeIndex = activeIndex;
         this.onSelect = onSelect;
+        // Tab widths are measured once here, so the strip is sized to the labels as of
+        // construction even though a translatable can change its width later.
         int total = 0;
-        for (String label : this.labels) {
+        for (Component label : this.labels) {
             int w = Ui.font().width(Ui.ui(label)) + TAB_PADDING * 2;
             this.tabWidths.add(w);
             total += w;

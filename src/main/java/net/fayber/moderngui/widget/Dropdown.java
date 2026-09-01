@@ -42,11 +42,15 @@ public class Dropdown extends AbstractButton {
     private int inlineHover = -1;
     private Runnable onChange;
 
-    public Dropdown(int x, int y, int w, int h, List<String> options, IntSupplier selectedIndex,
+    /**
+     * @param options option labels in menu order; translatables resolve at draw time, both in
+     *                the closed field and in the menu. The option list is fixed at construction.
+     */
+    public Dropdown(int x, int y, int w, int h, List<Component> options, IntSupplier selectedIndex,
                     IntConsumer onSelect) {
         super(x, y, w, h, Component.empty());
         this.optionLabels = new ArrayList<>();
-        for (String option : options) {
+        for (Component option : options) {
             this.optionLabels.add(Ui.ui(option));
         }
         this.selectedIndex = selectedIndex;
