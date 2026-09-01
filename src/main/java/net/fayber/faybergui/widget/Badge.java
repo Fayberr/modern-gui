@@ -8,15 +8,12 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 /**
- * A small non-interactive pill label: the status chip pattern ("Beta", "3 new", "Required") that
- * sits next to titles and list rows. Width sizes itself to the text plus horizontal padding, the
- * fill is a translucent wash and the label a stronger tone of the same hue.
+ * A small non-interactive pill label: the status chip ("Beta", "3 new", "Required") next to titles
+ * and list rows. Width sizes itself to the text plus padding.
  *
  * <p>{@link #success}, {@link #warning} and {@link #danger} cover the common semantic colours;
- * {@link #tint} takes any custom pair (fill, text).
- *
- * <p>Pure display: it never takes input and narrates nothing, but it is a real
- * {@link AbstractWidget} so it can sit in layouts and be positioned like any other widget.
+ * {@link #tint} takes any custom (fill, text) pair. It is a real {@link AbstractWidget} so it can
+ * sit in layouts like any other widget.
  */
 public class Badge extends AbstractWidget {
     /** Horizontal padding on each side of the text. */

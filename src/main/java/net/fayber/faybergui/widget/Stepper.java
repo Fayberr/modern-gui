@@ -16,11 +16,11 @@ import java.util.function.Supplier;
  * Stepper: a compact {@code [-] value [+]} control for numbers, like the numeric steppers in
  * native macOS and iOS preferences.
  *
- * <p><b>Binding pattern: live-read.</b> The value is read through {@code getter} every frame (so
+ * <p>Binding pattern: live-read. The value is read through {@code getter} every frame (so
  * external changes, clamps and other writers to the same setting show immediately) and each step
  * writes through {@code setter}, clamped to {@code [min, max]}.
  *
- * <p>The minus and plus buttons support <b>press-and-hold repeat</b>: an initial 400 ms delay,
+ * <p>The minus and plus buttons support press-and-hold repeat: an initial 400 ms delay,
  * then one step every 80 ms, so "sweeping" to a far value does not need dozens of clicks. Holding
  * is tracked from the mouse press here rather than through {@code onPress}, because the repeat
  * must keep firing between mouse events (checked each drawn frame). Buttons at the {@code min} or

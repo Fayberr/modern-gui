@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The top layer of a Fayber GUI screen. Added to the screen AFTER every other widget, so its
+ * The top layer of a Fayber GUI screen: it is added after every other widget, so its
  * extraction (and therefore drawing) happens last and everything it holds floats above the
  * content: dropdown menus, modal dialogs, toasts and rich tooltips.
  *
  * <p>It also fronts input for those layers through {@link #mouseClicked} / {@link #keyPressed}:
- * a {@link FayberGuiScreen} routes mouse and keyboard here FIRST, so an open menu swallows clicks
+ * a {@link FayberGuiScreen} routes mouse and keyboard here first, so an open menu swallows clicks
  * outside it (standard dropdown dismissal) and an open modal blocks the widgets beneath entirely.
  *
  * <p>The host is created by {@link FayberGuiScreen}; widgets reach it through the screen or a

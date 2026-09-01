@@ -18,7 +18,7 @@ import java.util.function.Supplier;
  * Keybind capture field: a ghost button showing the currently bound key; clicking it puts it into
  * a listening state ("Press a key...") where the next key press or mouse click becomes the bind.
  *
- * <p><b>Binding pattern: live-read + callback.</b> The displayed bind is read through the
+ * <p>Binding pattern: live-read plus callback. The displayed bind is read through the
  * {@code getter} every frame (so external resets show immediately), and a captured bind is
  * reported through {@code onChange}. The reported code is: GLFW keycodes as-is for keyboard keys,
  * and {@code 1000 + button} for mouse buttons, so a single int carries both and

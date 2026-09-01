@@ -14,7 +14,7 @@ import net.minecraft.util.Util;
  * thin capsule track below with the travelled part in mid grey and a white round knob.
  *
  * <p>All vanilla interaction is kept (mouse drag, arrow keys while focused); the drawing and the
- * mouse-to-value mapping are replaced. The written value is ALWAYS snapped to {@code step}: while
+ * mouse-to-value mapping are replaced. The written value is always snapped to {@code step}: while
  * dragging, the 0..1 {@code value} is driven from the raw mouse position and {@link #applyValue()}
  * writes the snapped value through immediately (live preview). The knob, however, is decoupled
  * from the written value: it follows the raw drag position 1:1 (so the motion is smooth instead of

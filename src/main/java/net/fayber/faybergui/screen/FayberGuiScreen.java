@@ -59,9 +59,9 @@ public abstract class FayberGuiScreen extends Screen {
 
     @Override
     protected void init() {
-        // The host is CREATED first so initScreen() can hand it to widgets while they build
+        // The host is created first so initScreen() can hand it to widgets while they build
         // (dropdowns capture screen.popupHost() at construction time; it used to be null there,
-        // which silently pushed every dropdown into the inline fallback). It is still ADDED
+        // which silently pushed every dropdown into the inline fallback). It is still added
         // last, below, which is what puts its popups on top during extraction.
         this.popupHost = new PopupHost(0, 0, this.width, this.height);
         this.popupHost.theme(this.theme);

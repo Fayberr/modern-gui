@@ -1,10 +1,12 @@
 """Generates assets/faybergui/icon.png: the mod icon.
 
-The design is the library's own widget catalog, composed on a dark rounded
+The design is the library's own widget catalog, composed on a dark square
 card in a 2x2 arrangement: an ON pill toggle top left, a primary button top
 right, and a slider spanning the full width along the bottom. Colours are
 the dark Theme palette (card #1A1A1A, border #3A3A3A, text #F0F0F0, accent
-#E6E6E6), so the icon is literally the UI it ships. Regenerate offline with:
+#E6E6E6), so the icon is literally the UI it ships. The card is a plain
+square: Modrinth and ModMenu round the corners themselves, and a baked-in
+radius shows up as a weird double edge on the site. Regenerate offline with:
 
     python3 tools/gen-icon.py [out.png]
 
@@ -26,7 +28,6 @@ ACCENT = (230, 230, 230, 255)   # #E6E6E6
 TRACK = (77, 77, 77, 255)       # #4D4D4D
 KNOB = (18, 18, 18, 255)        # #121212 (textOnAccent)
 
-RADIUS = 28 * S
 P = 18 * S          # inner padding
 RIGHT = W - P
 
@@ -34,8 +35,7 @@ img = Image.new("RGBA", (W, W), (0, 0, 0, 0))
 d = ImageDraw.Draw(img)
 
 # Card.
-d.rounded_rectangle([0, 0, W - 1, W - 1], radius=28 * S, fill=CARD, outline=BORDER,
-                    width=2 * S)
+d.rectangle([0, 0, W - 1, W - 1], fill=CARD, outline=BORDER, width=2 * S)
 
 # Top left: pill toggle, ON state (light pill, dark knob at the right end).
 t_l, t_t, t_r, t_b = P, 22 * S, P + 46 * S, 48 * S

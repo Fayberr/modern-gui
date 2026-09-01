@@ -67,11 +67,7 @@ public class HorizontalScrollPanel extends AbstractWidget {
 
     /** Children of the panel; their live positions are screen positions, rewritten every frame. */
     private final List<AbstractWidget> children = new ArrayList<>();
-    /**
-     * Content-space x/y per child (parallel to {@link #children}). Children are repositioned every
-     * frame, so their true content coordinates live here; {@link #syncContentCoords()} re-captures
-     * them from the children.
-     */
+/** Content-space x/y per child, parallel to {@link #children}; re-captured by {@link #syncContentCoords()}. */
     private final List<int[]> childPos = new ArrayList<>();
     /** Child a drag is currently aimed at, captured on click. */
     private AbstractWidget pressedChild;

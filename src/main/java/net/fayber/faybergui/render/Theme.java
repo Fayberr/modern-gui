@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
  *
  * <p>{@link #dark()} is the default: a genuinely neutral dark ramp, identical to the original
  * Fayber Config palette. The surface greys have equal R/G/B so nothing reads as tinted, and there
- * is deliberately <b>no accent colour</b>. Emphasis is carried by lightness alone: a near-white
+ * is deliberately no accent colour. Emphasis is carried by lightness alone: a near-white
  * fill marks the confirming button and the "on" state of a toggle, which keeps the screen quiet
  * and lets the mod's own content be the only real colour on it. (The {@code accent} fields hold
  * that neutral light fill by default; {@code withAccent} swaps them to a real colour.)

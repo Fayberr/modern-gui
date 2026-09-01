@@ -3,7 +3,7 @@
 	"id": "faybergui",
 	"version": "${version}",
 	"name": "Fayber GUI",
-	"description": "A general-purpose modern GUI widget library for Minecraft mods: physical-pixel rendering, anti-aliased rounded shapes, bundled Inter font, and a broad catalog of configurable widgets (buttons, toggles, sliders, dropdowns, tabs, modals, toasts and more).",
+	"description": "A widget library for Minecraft mods: dark rounded cards, anti-aliased shapes and a bundled Inter font.",
 	"authors": [
 		"Fayber"
 	],

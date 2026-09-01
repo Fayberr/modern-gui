@@ -20,11 +20,11 @@ import java.util.function.IntSupplier;
  * rounded inset pill in the accent colour, so switching reads as a pill sliding between slots
  * rather than a row of independent buttons.
  *
- * <p>This is <b>one widget</b>, not a container of child buttons: the segments are laid out and
+ * <p>This is one widget, not a container of child buttons: the segments are laid out and
  * hit-tested manually inside {@link #mouseClicked}, which keeps the control a single entry in the
  * screen's child list and a single narration target.
  *
- * <p><b>Binding pattern: live-read.</b> The selected index is read through {@code selectedIndex}
+ * <p>Binding pattern: live-read. The selected index is read through {@code selectedIndex}
  * every frame, so external changes show immediately, and clicks report through {@code onSelect}
  * without owning the state. The selection pill eases horizontally to the selected segment
  * (time-normalised, so the feel is identical at any frame rate).

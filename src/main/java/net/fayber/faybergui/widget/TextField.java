@@ -25,18 +25,18 @@ import java.util.function.Predicate;
  * This widget only replaces its look and its focus plumbing:
  *
  * <ul>
- *   <li><b>Look.</b> The box runs borderless with its drop shadow off, so its text lands at
+ *   <li>Look: the box runs borderless with its drop shadow off, so its text lands at
  *       exactly {@code (x, y)}; this widget draws the card underneath (theme card fill plus a
  *       hairline border that highlights while focused) and the hint text when the field is empty
  *       and unfocused. A {@link EditBox#addFormatter formatter} re-styles every line into the
  *       Inter UI font, which makes the typed text ride {@link Ui}'s font instead of the vanilla
  *       bitmap one.
- *   <li><b>Focus.</b> The widget owns the focus state and mirrors it onto the inner box: a click
+ *   <li>Focus: the widget owns the focus state and mirrors it onto the inner box: a click
  *       inside takes focus (and forwards the click so the caret lands under it), a click outside
  *       drops it. {@link #setFocused}/{@link #isFocused} delegate, so screens that dispatch keys
  *       to the focused widget reach the EditBox through the forwarding handlers below. The inner
  *       box is also exposed via {@link #children()} so container-style dispatch works too.
- *   <li><b>Validation.</b> A {@link Predicate} marks the current text as invalid (rendered in the
+ *   <li>Validation: a {@link Predicate} marks the current text as invalid (rendered in the
  *       error colour) while typing, but never blocks input, so users can pass through invalid
  *       intermediate states (a half-typed URL, a negative number mid-edit). {@link #getValue()}
  *       returns the raw text; {@link #getValidValue()} the last value that passed validation.

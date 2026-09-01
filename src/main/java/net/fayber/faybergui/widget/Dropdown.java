@@ -27,7 +27,7 @@ import java.util.function.IntSupplier;
  * widgets extracted later.
  */
 public class Dropdown extends AbstractButton {
-    /** Same corner treatment as the ghost FlatButton. */
+    /** Right-edge room for the chevron. */
     private static final int CHEVRON_ROOM = 18;
 
     private final IntSupplier selectedIndex;

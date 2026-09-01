@@ -19,10 +19,10 @@ import java.util.function.Supplier;
  * <p>Two binding patterns are supported, mirroring the rest of the toolkit:
  *
  * <ul>
- *   <li><b>Live-read</b> (getter/setter): the checked state is read through the getter every
+ *   <li>Live-read (getter/setter): the checked state is read through the getter every
  *       frame, so external changes (config reloads, other widgets writing the same value) show
  *       immediately, and presses write through the setter (live preview).</li>
- *   <li><b>Internal state</b> (initial value + {@link Consumer}&lt;Boolean&gt;): the widget owns
+ *   <li>Internal state (initial value + {@link Consumer}&lt;Boolean&gt;): the widget owns
  *       the boolean and reports flips through the callback; use it for standalone dialogs where
  *       nothing else reads the value.</li>
  * </ul>

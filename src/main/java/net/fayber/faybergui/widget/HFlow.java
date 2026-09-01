@@ -36,10 +36,7 @@ public class HFlow extends AbstractWidget {
 
     /** Flow children; their live positions are screen positions, rewritten every frame. */
     private final List<AbstractWidget> children = new ArrayList<>();
-    /**
-     * Flow-space x/y per child (parallel to {@link #children}); children are repositioned every
-     * frame, so their true flow coordinates live here.
-     */
+/** Flow-space x/y per child, parallel to {@link #children}. */
     private final List<int[]> flowPos = new ArrayList<>();
 
     /** Child a drag is currently aimed at, captured on click. */

@@ -14,11 +14,8 @@ import java.util.function.Supplier;
 /**
  * Pill toggle: a capsule track (near-white when on, dark when off) with a round knob that slides
  * between the ends. Reads its state through the entry's getter every frame, so external changes
- * show immediately, and writes through on press (live preview).
- *
- * <p>The knob eases towards its target each frame, which is what makes a toggle feel like an app
- * control rather than a checkbox. Configurable: {@link #size} variants, {@link #theme},
- * on/off colour overrides, an optional change hook.
+ * show immediately, and writes through on press (live preview). The knob eases towards its
+ * target each frame, which is what makes a toggle feel like an app control rather than a checkbox.
  */
 public class PillToggle extends AbstractButton {
     /** Track sizes: SMALL 26x14, NORMAL 34x18, LARGE 44x24. */
@@ -45,6 +42,7 @@ public class PillToggle extends AbstractButton {
     private int onOverride = -1;
     private int onHoverOverride = -1;
     private int offOverride = -1;
+    private int offHoverOverride = -1;
     private Runnable onChange;
 
     /** 0 = off position, 1 = on position; negative means "not initialised yet". */
@@ -86,9 +84,10 @@ public class PillToggle extends AbstractButton {
         return this;
     }
 
-    /** Overrides the off-state track colour for both states. */
+    /** Overrides the off-state track colour, normal and hovered. */
     public PillToggle offColor(int off, int offHover) {
         this.offOverride = off;
+        this.offHoverOverride = offHover;
         return this;
     }
 
@@ -115,7 +114,8 @@ public class PillToggle extends AbstractButton {
                 ? (hovered
                         ? (this.onHoverOverride >= 0 ? this.onHoverOverride : this.theme.accentHover)
                         : (this.onOverride >= 0 ? this.onOverride : this.theme.accent))
-                : (hovered ? this.theme.sliderTrackHover
+                : (hovered
+                        ? (this.offHoverOverride >= 0 ? this.offHoverOverride : this.theme.sliderTrackHover)
                         : (this.offOverride >= 0 ? this.offOverride : this.theme.offTrack));
         Ui.pill(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(), track);
 

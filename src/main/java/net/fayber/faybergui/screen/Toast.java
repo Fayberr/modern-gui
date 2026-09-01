@@ -22,7 +22,7 @@ public class Toast {
     private static final float RADIUS = 8.0f;
     /** Slide-in/out animation time in ms. */
     private static final long SLIDE_MS = 260;
-    /** Max toasts kept on screen; extra ones wait? No: they are dropped (oldest retire first). */
+    /** Max toasts kept on screen; the host retires the oldest first. */
     private static final int MAX_ON_SCREEN = 4;
 
     private final Component title;

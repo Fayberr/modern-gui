@@ -16,11 +16,11 @@ import java.util.function.IntSupplier;
  * Radio group: a set of options sharing one selection, each drawn as a 14px circle with a label
  * to its right. Exactly one option is selected at a time; clicking a row selects it.
  *
- * <p>This is <b>one widget</b>, not a container of child buttons: the rows are laid out and
+ * <p>This is one widget, not a container of child buttons: the rows are laid out and
  * hit-tested manually inside {@link #mouseClicked}, which keeps the whole group a single entry
  * in the screen's child list and a single narration target.
  *
- * <p><b>Binding pattern: live-read.</b> The selected index is read through {@code selectedIndex}
+ * <p>Binding pattern: live-read. The selected index is read through {@code selectedIndex}
  * every frame, so external changes (a config reload, another control selecting a related option)
  * show immediately, and clicks report through {@code onSelect} without owning the state.
  *

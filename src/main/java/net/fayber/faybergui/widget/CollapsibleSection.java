@@ -61,10 +61,7 @@ public class CollapsibleSection extends AbstractWidget {
 
     /** Content children; their live positions are screen positions, rewritten every frame. */
     private final List<AbstractWidget> content = new ArrayList<>();
-    /**
-     * Content-space x/y per child (parallel to {@link #content}); children are repositioned every
-     * frame, so their true content coordinates live here.
-     */
+/** Content-space x/y per child, parallel to {@link #content}. */
     private final List<int[]> contentPos = new ArrayList<>();
     /** Total content height from the last {@link #pack()}. */
     private int contentHeight;

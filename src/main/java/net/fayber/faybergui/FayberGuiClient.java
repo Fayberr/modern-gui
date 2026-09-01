@@ -5,15 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Fayber GUI: a general-purpose modern GUI widget library for Minecraft mods.
- *
- * <p>Mods build screens out of the widgets in {@code net.fayber.faybergui.widget} (dark rounded
- * cards, physical-pixel rendering, anti-aliased corners, bundled Inter font) and lay them out on
- * their own {@code Screen}s. {@link net.fayber.faybergui.screen.FayberGuiScreen} is the base
- * screen that hosts popups (dropdowns, modals, toasts, rich tooltips).
- *
- * <p>The library is designed to be embedded: a mod either ships it as a jar-in-jar (loom
- * {@code include}) or declares it an optional dependency and falls back when absent.
+ * Fayber GUI: a general-purpose modern GUI widget library for Minecraft mods. Mods build screens
+ * out of the widgets in {@code net.fayber.faybergui.widget}; {@link
+ * net.fayber.faybergui.screen.FayberGuiScreen} is the base screen that hosts popups. A mod either
+ * ships the library as a jar-in-jar (loom {@code include}) or declares it an optional dependency.
  */
 public class FayberGuiClient implements ClientModInitializer {
     public static final String MOD_ID = "faybergui";

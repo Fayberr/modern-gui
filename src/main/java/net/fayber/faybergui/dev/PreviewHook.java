@@ -6,12 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 
 /**
- * Widget catalog workbench. Opens the widget test screen automatically shortly after the dev
- * client reaches the title screen, so the look can be iterated on headlessly: run the client
- * under Xvfb, grab a frame, inspect the pixels, repeat (see {@code tools/preview.sh}).
- *
- * <p>Completely inert unless the JVM is started with {@code -Dfaybergui.preview=true}, so this
- * class costs shipped builds one boolean check at init.
+ * Widget catalog workbench: opens the widget test screen shortly after the dev client reaches the
+ * title screen, so the look can be iterated on headlessly (see {@code tools/preview.sh}). Inert
+ * unless the JVM is started with {@code -Dfaybergui.preview=true}.
  */
 public final class PreviewHook {
     private PreviewHook() {

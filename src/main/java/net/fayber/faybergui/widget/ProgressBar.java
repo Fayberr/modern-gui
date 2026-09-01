@@ -17,11 +17,11 @@ import java.util.function.DoubleSupplier;
  * <p>Two modes:
  *
  * <ul>
- *   <li><b>Determinate</b> (default): the fill eases towards the target each frame
+ *   <li>Determinate (default): the fill eases towards the target each frame
  *       ({@code current += (target - current) * (1 - exp(-dt * 10))}), so bursty updates read as
  *       one smooth motion. Disable with {@link #animated(boolean)} for exact per-frame fills
  *       (scrubbing, progress mirrors of another slider).</li>
- *   <li><b>Indeterminate</b> ({@link #indeterminate(boolean)}): a 30%-wide pill sweeps back and
+ *   <li>Indeterminate ({@link #indeterminate(boolean)}): a 30%-wide pill sweeps back and
  *       forth, for work with no known duration.</li>
  * </ul>
  *
