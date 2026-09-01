@@ -31,6 +31,6 @@ Buttons, pill toggles, checkboxes, radio groups, sliders, dropdowns, text and nu
 
 ## For mod developers
 
-- Maven dependency `net.fayber:fayber-gui`, embedded with Loom's jar-in-jar include.
+- Maven dependency `net.fayber:fayber-gui`. Depend on it directly, or bundle it with Loom's jar-in-jar include, whichever fits.
 - Zero mixins; vanilla plus Fabric API only, safe to bundle.
 - LGPL-3.0-or-later. Inter is bundled under the SIL Open Font License; icons are derived from Lucide.
