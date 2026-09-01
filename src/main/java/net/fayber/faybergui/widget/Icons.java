@@ -38,7 +38,8 @@ public final class Icons {
     private static final int CELL = 72;
     private static final int COLS = 4;
     private static final int ATLAS_W = CELL * COLS;
-    private static final int ATLAS_H = CELL * 4;
+    /** 17 icons in 4 columns: five rows. Must match tools/gen-icons.java. */
+    private static final int ATLAS_H = CELL * 5;
     /** Where the PNG lives in resources. */
     private static final Identifier ATLAS_ASSET =
             Identifier.fromNamespaceAndPath(FayberGuiClient.MOD_ID, "textures/gui/icons.png");
@@ -84,6 +85,8 @@ public final class Icons {
     public static final Glyph X_CIRCLE = glyph(14);
     /** Solid dot, useful as a generic colour swatch. */
     public static final Glyph DOT = glyph(15);
+    /** Counter-clockwise rotation arrow (reset to default actions). */
+    public static final Glyph ROTATE_CCW = glyph(16);
 
     private static boolean registered;
     private static final Logger LOGGER = FayberGuiClient.LOGGER;

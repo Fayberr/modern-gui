@@ -74,6 +74,9 @@ public class GenIcons {
             {"circle:12 12 10", "m15 9-6 6", "m9 9 6 6"},
             // 15 dot (filled)
             {"fill:circle:12 12 8"},
+            // 16 rotate-ccw (reset to default)
+            {"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8",
+             "M3 3v5h5"},
     };
 
     public static void main(String[] args) throws Exception {
