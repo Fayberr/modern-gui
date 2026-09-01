@@ -77,11 +77,14 @@ public class ColorPickerModal implements ModalLayer {
         this.title = Ui.uiBold(title);
         this.onChange = onChange;
         this.onCancel = onCancel;
-        this.setArgb(initialArgb);
+        // The field must exist before the first setArgb (it seeds the hex text), and the edit
+        // callback is attached only after that seed: a ctor-time echo would write the HSV
+        // round-trip of the initial colour back through the owner before any user input.
         this.hexField = new TextField(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
                 .maxLength(10)
-                .validator(HEX_TEXT)
-                .onChanged(this::onHexEdited);
+                .validator(HEX_TEXT);
+        this.setArgb(initialArgb);
+        this.hexField.onChanged(this::onHexEdited);
         this.cancelButton = new FlatButton(0, 0, 72, BUTTON_H, Component.literal("Cancel"),
                 () -> this.cancelClicked = true, FlatButton.Style.GHOST);
         this.okButton = new FlatButton(0, 0, 56, BUTTON_H, Component.literal("OK"),
@@ -337,6 +340,8 @@ public class ColorPickerModal implements ModalLayer {
             int veil = Math.round(255.0f * (py / (float) (h - 1)));
             Ui.rect(gfx, sx, sy + py, w, 1, veil << 24);
         }
+        // Border only, no fill: the gradient above IS the square's interior. A zero-alpha fill
+        // is safe here because Ui.roundRectBorder paints a real ring for that case.
         Ui.roundRectBorder(gfx, sx, sy, w, h, 4.0f, 0, theme.cardBorder, 1.0f);
         // Ring cursor at the current saturation/value.
         float cx = sx + this.sat * (w - 1);

@@ -199,13 +199,32 @@ public final class Ui {
                                        float radius, int fill, int border, float thickness) {
         float s = scale();
         int t = Math.max(1, Math.round(thickness * s));
-        gfx.pose().pushMatrix();
-        gfx.pose().scale(1.0f / s, 1.0f / s);
         int x0 = Math.round(x * s);
         int y0 = Math.round(y * s);
         int w0 = Math.round(w * s);
         int h0 = Math.round(h * s);
         int r0 = Math.round(radius * s);
+        if ((fill >>> 24) == 0) {
+            // A fully transparent fill cannot be painted over the outer shape to "cut" the
+            // interior out (a zero-alpha fill is a blend no-op, so the border would cover the
+            // whole rect). Paint the ring directly instead: four edge strips plus the corner
+            // arcs. The corner arc fills its full quadrant, so corner interiors stay border
+            // coloured inside the arc; at hairline thickness that still reads as a ring.
+            gfx.pose().pushMatrix();
+            gfx.pose().scale(1.0f / s, 1.0f / s);
+            gfx.fill(x0 + r0, y0, x0 + w0 - r0, y0 + t, border);
+            gfx.fill(x0 + r0, y0 + h0 - t, x0 + w0 - r0, y0 + h0, border);
+            gfx.fill(x0, y0 + r0, x0 + t, y0 + h0 - r0, border);
+            gfx.fill(x0 + w0 - t, y0 + r0, x0 + w0, y0 + h0 - r0, border);
+            corner(gfx, x0, y0, r0, 0, 0, border);
+            corner(gfx, x0 + w0 - r0, y0, r0, 1, 0, border);
+            corner(gfx, x0, y0 + h0 - r0, r0, 0, 1, border);
+            corner(gfx, x0 + w0 - r0, y0 + h0 - r0, r0, 1, 1, border);
+            gfx.pose().popMatrix();
+            return;
+        }
+        gfx.pose().pushMatrix();
+        gfx.pose().scale(1.0f / s, 1.0f / s);
         roundRectDevice(gfx, x0, y0, w0, h0, r0, border);
         roundRectDevice(gfx, x0 + t, y0 + t, w0 - 2 * t, h0 - 2 * t, Math.max(0, r0 - t), fill);
         gfx.pose().popMatrix();
