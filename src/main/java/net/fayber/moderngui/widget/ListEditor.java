@@ -52,6 +52,9 @@ public class ListEditor extends AbstractWidget {
     private Consumer<List<String>> onChanged;
     private Component addLabel = Component.literal("+ Add");
     private Component removeLabel = Component.literal("Remove");
+    /** Placeholder drawn in an empty row (the per-type hint, e.g. "80" for an int list). */
+    @Nullable
+    private String fieldHint;
 
     /** @param initial the starting items, one per row */
     public ListEditor(int x, int y, int w, List<String> initial) {
@@ -69,6 +72,9 @@ public class ListEditor extends AbstractWidget {
         // the initial text, and onChanged last so the programmatic value() does not fire it.
         TextField field = new TextField(0, 0, 10, ROW_HEIGHT).theme(this.theme).maxLength(MAX_LENGTH);
         field.validator(this.lineValidator);
+        if (this.fieldHint != null) {
+            field.hint(this.fieldHint);
+        }
         field.value(initial);
         field.onChanged(v -> this.fireChanged());
         this.fields.add(field);
@@ -115,6 +121,19 @@ public class ListEditor extends AbstractWidget {
         this.removeLabel = Component.literal(removeLabel);
         for (IconButton remove : this.removes) {
             remove.tooltip(this.removeLabel);
+        }
+        return this;
+    }
+
+    /**
+     * Placeholder shown in an empty row, focused or not: the per-type hint that makes list
+     * flavours distinguishable at a glance ("80" for an int list, "0.5" for a float list).
+     * Null clears it.
+     */
+    public ListEditor fieldHint(@Nullable String fieldHint) {
+        this.fieldHint = fieldHint;
+        for (TextField field : this.fields) {
+            field.hint(fieldHint == null ? "" : fieldHint);
         }
         return this;
     }

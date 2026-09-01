@@ -27,8 +27,9 @@ import java.util.function.Predicate;
  * <ul>
  *   <li>Look: the box runs borderless with its drop shadow off, so its text lands at
  *       exactly {@code (x, y)}; this widget draws the card underneath (theme card fill plus a
- *       hairline border that highlights while focused) and the hint text when the field is empty
- *       and unfocused. A {@link EditBox#addFormatter formatter} re-styles every line into the
+ *       hairline border that highlights while focused) and the hint text when the field is empty,
+ *       focused or not: an empty field should always say what belongs in it. A
+ *       {@link EditBox#addFormatter formatter} re-styles every line into the
  *       Inter UI font, which makes the typed text ride {@link Ui}'s font instead of the vanilla
  *       bitmap one.
  *   <li>Focus: the widget owns the focus state and mirrors it onto the inner box: a click
@@ -269,10 +270,21 @@ public class TextField extends AbstractWidget {
         int textY = this.getY() + (this.getHeight() - lineHeight) / 2 + 1;
         this.box.setPosition(textX, textY);
         this.box.setWidth(Math.max(1, this.getWidth() - this.leftPad - this.rightPad));
+        // The box computes its horizontal scroll against whatever width it had when the value
+        // or caret last moved. A field built at a placeholder size and resized later (ListEditor
+        // rows are) keeps that stale scroll: the extract would draw value.substring(displayPos)
+        // past the end of the text, an empty field, until a click re-derives it. While unfocused
+        // there is no user scroll state to preserve, so re-derive it from the live geometry.
+        if (!focused) {
+            this.box.setHighlightPos(this.box.getCursorPosition());
+        }
 
         boolean empty = this.box.getValue().isEmpty();
-        if (empty && this.hint != null && !this.hint.isEmpty() && !focused) {
+        if (empty && this.hint != null && !this.hint.isEmpty()) {
             // Draw the hint ourselves (in the Inter font) instead of EditBox's vanilla-font hint.
+            // It stays up while focused too: a placeholder that disappears the moment you click in
+            // is gone exactly where it matters, in a fresh empty row about to be filled (a ListEditor
+            // "+ Add" row lands focused and would otherwise read as a blank slot).
             int hintColor = this.isActive() ? this.theme.textMuted : Theme.darken(this.theme.textMuted, 0.45f);
             Ui.text(gfx, Ui.ui(this.hint), textX, textY, hintColor);
         }
