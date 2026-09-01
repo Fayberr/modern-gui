@@ -247,6 +247,9 @@ public class TextField extends AbstractWidget {
         boolean focused = this.box.isFocused();
         if (this.bordered) {
             int border = focused ? this.theme.cardBorderHover : this.theme.cardBorder;
+            if (!this.isActive()) {
+                border = Theme.darken(border, 0.45f);
+            }
             Ui.roundRectBorder(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(),
                     this.radius, this.theme.card, border, 1.0f);
         }
@@ -255,6 +258,9 @@ public class TextField extends AbstractWidget {
         int color = this.textOverride >= 0 ? this.textOverride : this.theme.text;
         if (!this.isValid()) {
             color = ERROR_COLOR;
+        }
+        if (!this.isActive()) {
+            color = Theme.darken(color, 0.45f);
         }
         this.box.setTextColor(color);
 
@@ -267,7 +273,8 @@ public class TextField extends AbstractWidget {
         boolean empty = this.box.getValue().isEmpty();
         if (empty && this.hint != null && !this.hint.isEmpty() && !focused) {
             // Draw the hint ourselves (in the Inter font) instead of EditBox's vanilla-font hint.
-            Ui.text(gfx, Ui.ui(this.hint), textX, textY, this.theme.textMuted);
+            int hintColor = this.isActive() ? this.theme.textMuted : Theme.darken(this.theme.textMuted, 0.45f);
+            Ui.text(gfx, Ui.ui(this.hint), textX, textY, hintColor);
         }
 
         // The inner box draws its own text, caret and selection, riding our font via the formatter.

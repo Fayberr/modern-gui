@@ -105,7 +105,7 @@ public class PillToggle extends AbstractButton {
             this.knobPos += (target - this.knobPos) * 0.35f;
         }
 
-        boolean hovered = this.isHoveredOrFocused();
+        boolean hovered = this.isActive() && this.isHoveredOrFocused();
         int track = on
                 ? (hovered
                         ? (this.onHoverOverride >= 0 ? this.onHoverOverride : this.theme.accentHover)
@@ -113,10 +113,14 @@ public class PillToggle extends AbstractButton {
                 : (hovered
                         ? (this.offHoverOverride >= 0 ? this.offHoverOverride : this.theme.sliderTrackHover)
                         : (this.offOverride >= 0 ? this.offOverride : this.theme.offTrack));
-        Ui.pill(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(), track);
-
         // Dark knob on the light on-track, light knob on the dark off-track.
         int knob = on ? this.theme.textOnAccent : this.theme.text;
+        if (!this.isActive()) {
+            track = Theme.darken(track, 0.45f);
+            knob = Theme.darken(knob, 0.45f);
+        }
+        Ui.pill(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(), track);
+
         float knobRadius = this.getHeight() / 2.0f - KNOB_INSET;
         float left = this.getX() + KNOB_INSET + knobRadius;
         float right = this.getX() + this.getWidth() - KNOB_INSET - knobRadius;

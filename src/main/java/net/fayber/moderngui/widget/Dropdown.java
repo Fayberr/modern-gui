@@ -152,7 +152,7 @@ public class Dropdown extends AbstractButton {
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
-        boolean hovered = this.isHoveredOrFocused();
+        boolean hovered = this.isActive() && this.isHoveredOrFocused();
         Ui.roundRectBorder(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(), FlatButton.RADIUS,
                 hovered ? this.theme.cardHover : this.theme.card,
                 hovered ? this.theme.cardBorderHover : this.theme.cardBorder, 1.0f);
@@ -161,12 +161,17 @@ public class Dropdown extends AbstractButton {
         Component label = current >= 0 && current < this.optionLabels.size()
                 ? this.optionLabels.get(current) : Component.empty();
         int textY = this.getY() + (this.getHeight() - Ui.font().lineHeight) / 2 + 1;
-        Ui.text(gfx, label, this.getX() + 10, textY, hovered ? this.theme.text : this.theme.textSecondary);
+        int text = hovered ? this.theme.text : this.theme.textSecondary;
+        int chevron = hovered ? this.theme.textSecondary : this.theme.textMuted;
+        if (!this.isActive()) {
+            text = Theme.darken(text, 0.45f);
+            chevron = Theme.darken(chevron, 0.45f);
+        }
+        Ui.text(gfx, label, this.getX() + 10, textY, text);
 
         float chevronCx = this.getX() + this.getWidth() - CHEVRON_ROOM / 2.0f - 4;
         float chevronCy = this.getY() + this.getHeight() / 2.0f;
-        Icons.CHEVRON_DOWN.draw(gfx, chevronCx, chevronCy, 12,
-                hovered ? this.theme.textSecondary : this.theme.textMuted);
+        Icons.CHEVRON_DOWN.draw(gfx, chevronCx, chevronCy, 12, chevron);
 
         if (this.host == null && this.open) {
             this.inlineHover = this.inlineRowAt(mouseY);

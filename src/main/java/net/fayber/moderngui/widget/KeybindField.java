@@ -209,7 +209,7 @@ public class KeybindField extends AbstractButton {
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
-        boolean hovered = this.isHoveredOrFocused();
+        boolean hovered = this.isActive() && this.isHoveredOrFocused();
         int fill = hovered && !this.listening ? this.theme.cardHover : this.theme.card;
         int border = this.listening
                 ? this.pulseBorder()
@@ -224,10 +224,13 @@ public class KeybindField extends AbstractButton {
         } else {
             int code = this.getter.get();
             boolean unbound = code < 0; // the unbound sentinel resolves to "Not bound" below
+            int text = unbound ? this.theme.textMuted
+                    : (hovered ? this.theme.text : this.theme.textSecondary);
+            if (!this.isActive()) {
+                text = Theme.darken(text, 0.45f);
+            }
             Ui.textCentered(gfx, Ui.ui(keyName(code)),
-                    this.getX() + this.getWidth() / 2, textY,
-                    unbound ? this.theme.textMuted
-                            : (hovered ? this.theme.text : this.theme.textSecondary));
+                    this.getX() + this.getWidth() / 2, textY, text);
         }
     }
 

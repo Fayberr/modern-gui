@@ -399,7 +399,13 @@ public class TextArea extends AbstractWidget {
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
+        boolean active = this.isActive();
         int border = this.focused ? this.theme.cardBorderHover : this.theme.cardBorder;
+        int text = active ? this.theme.text : Theme.darken(this.theme.text, 0.45f);
+        int muted = active ? this.theme.textMuted : Theme.darken(this.theme.textMuted, 0.45f);
+        if (!active) {
+            border = Theme.darken(border, 0.45f);
+        }
         Ui.roundRectBorder(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(),
                 this.radius, this.theme.card, border, 1.0f);
 
@@ -420,12 +426,12 @@ public class TextArea extends AbstractWidget {
             }
             if (this.lineNumbers) {
                 String number = String.valueOf(index + 1);
-                Ui.text(gfx, Ui.ui(number), this.getX() + PAD, y, this.theme.textMuted);
+                Ui.text(gfx, Ui.ui(number), this.getX() + PAD, y, muted);
             }
             String line = this.lines.get(index);
             if (!line.isEmpty()) {
                 // Hard-clip wide lines to the card; no horizontal scroll in this MVP.
-                Ui.text(gfx, Ui.ellipsize(Ui.ui(line), maxCol), textLeft, y, this.theme.text);
+                Ui.text(gfx, Ui.ellipsize(Ui.ui(line), maxCol), textLeft, y, text);
             }
             if (this.focused && index == this.caretLine
                     && Util.getMillis() / BLINK_MS % 2 == 0) {

@@ -92,6 +92,11 @@ public abstract class StyledSlider extends AbstractSliderButton {
         return this;
     }
 
+    /** Right edge of the label text on the top line, for rows that place a status chip after it. */
+    public int labelRight() {
+        return this.getX() + (int) SIDE_PADDING + Ui.font().width(this.label);
+    }
+
     /** Overrides the filled track colour for both states (defaults: theme slider fills). */
     public StyledSlider fillColor(int fill, int hover) {
         this.fillOverride = fill;

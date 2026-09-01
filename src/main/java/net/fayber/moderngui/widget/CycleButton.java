@@ -114,15 +114,18 @@ public class CycleButton<T> extends AbstractButton {
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
-        boolean hovered = this.isHoveredOrFocused();
+        boolean hovered = this.isActive() && this.isHoveredOrFocused();
         Ui.roundRectBorder(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(), FlatButton.RADIUS,
                 hovered ? this.theme.cardHover : this.theme.card,
                 hovered ? this.theme.cardBorderHover : this.theme.cardBorder, 1.0f);
         int textY = this.getY() + (this.getHeight() - Ui.font().lineHeight) / 2 + 1;
         T value = this.getter.get();
         Component label = value == null ? Component.empty() : this.namer.apply(value);
-        Ui.textCentered(gfx, label, this.getX() + this.getWidth() / 2, textY,
-                hovered ? this.theme.text : this.theme.textSecondary);
+        int text = hovered ? this.theme.text : this.theme.textSecondary;
+        if (!this.isActive()) {
+            text = Theme.darken(text, 0.45f);
+        }
+        Ui.textCentered(gfx, label, this.getX() + this.getWidth() / 2, textY, text);
     }
 
     @Override
