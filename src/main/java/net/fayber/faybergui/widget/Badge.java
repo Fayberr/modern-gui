@@ -52,8 +52,6 @@ public class Badge extends AbstractWidget {
         return new Badge(x, y, text).tint(0x22F28B82, 0xFFF28B82);
     }
 
-    // ------------------------------------------------------------- fluent config
-
     /** Custom colours: a translucent fill wash and a fully opaque label colour. */
     public Badge tint(int fillArgb, int textArgb) {
         this.fill = fillArgb;
@@ -65,8 +63,6 @@ public class Badge extends AbstractWidget {
         this.theme = theme;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

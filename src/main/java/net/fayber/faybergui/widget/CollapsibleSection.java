@@ -52,24 +52,18 @@ public class CollapsibleSection extends AbstractWidget {
     private boolean open;
     /** Expanded fraction in [0, 1]; eases toward {@link #open}. */
     private float fraction;
-    /** Timestamp of the last drawn frame, for the time-normalised ease. */
     private long lastFrameMs = -1L;
     /** Fraction below which the children are not drawn at all. */
     private static final float DRAW_THRESHOLD = 0.02f;
     /** Fraction above which clicks reach the children. */
     private static final float INTERACT_THRESHOLD = 0.9f;
 
-    /** Content children; their live positions are screen positions, rewritten every frame. */
     private final List<AbstractWidget> content = new ArrayList<>();
-/** Content-space x/y per child, parallel to {@link #content}. */
+    // Content-space x/y per child, parallel to content.
     private final List<int[]> contentPos = new ArrayList<>();
-    /** Total content height from the last {@link #pack()}. */
     private int contentHeight;
 
-    /** Optional hook fired after the section toggles. */
     private Runnable onChange;
-
-    /** Child a drag is currently aimed at, captured on click. */
     private AbstractWidget pressedChild;
 
     public CollapsibleSection(int x, int y, int width, String title, boolean initiallyOpen) {
@@ -80,14 +74,10 @@ public class CollapsibleSection extends AbstractWidget {
         this.updateHeight();
     }
 
-    // ------------------------------------------------------------------- content
-
     /**
      * Appends a child to the content area. Its current position is captured as content
      * coordinates, then the column layout is re-run (4px gap), so order of addition is the visual
      * order.
-     *
-     * @return the section, for chaining
      */
     public CollapsibleSection add(AbstractWidget child) {
         this.content.add(child);
@@ -122,8 +112,6 @@ public class CollapsibleSection extends AbstractWidget {
         this.setHeight(HEADER_H + this.contentHeight);
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public CollapsibleSection theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -155,8 +143,6 @@ public class CollapsibleSection extends AbstractWidget {
         }
     }
 
-    // --------------------------------------------------------------------- input
-
     /** Clicks on the header toggle the section; clicks in the open content reach the children. */
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
@@ -179,7 +165,6 @@ public class CollapsibleSection extends AbstractWidget {
         return true;
     }
 
-    /** Releases go to the child the press landed on (capture), or to any child under the pointer. */
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
         if (this.pressedChild != null) {
@@ -194,7 +179,6 @@ public class CollapsibleSection extends AbstractWidget {
         return false;
     }
 
-    /** Drags go to the captured child, so a slider inside the section keeps its pointer. */
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (this.pressedChild != null) {
@@ -207,7 +191,6 @@ public class CollapsibleSection extends AbstractWidget {
         return false;
     }
 
-    /** The child whose screen-space bounds contain the point, or null. */
     private AbstractWidget childAt(double mx, double my) {
         int shift = (int) ((1.0f - this.fraction) * this.contentHeight);
         for (int i = 0; i < this.content.size(); i++) {
@@ -223,12 +206,9 @@ public class CollapsibleSection extends AbstractWidget {
         return null;
     }
 
-    /** Content children for screen focus/narration dispatch. */
     public List<? extends GuiEventListener> children() {
         return Collections.unmodifiableList(this.content);
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

@@ -45,8 +45,6 @@ public class SearchField extends TextField {
         this.hint("Search");
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public SearchField theme(Theme theme) {
         super.theme(theme);
         return this;
@@ -67,8 +65,6 @@ public class SearchField extends TextField {
         super.radius(radius);
         return this;
     }
-
-    // ----------------------------------------------------------------- behaviour
 
     @Override
     protected void onEdited(String value) {
@@ -111,8 +107,6 @@ public class SearchField extends TextField {
         double cy = this.getY() + this.getHeight() / 2.0;
         return Math.abs(mouseX - cx) <= CLEAR_HIT && Math.abs(mouseY - cy) <= CLEAR_HIT;
     }
-
-    // ---------------------------------------------------------------- rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

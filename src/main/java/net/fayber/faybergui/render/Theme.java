@@ -123,8 +123,6 @@ public final class Theme {
         return a | (r << 16) | (g << 8) | b;
     }
 
-    // ------------------------------------------------------- fluent re-skinning
-
     public Theme scrim(int v) {
         return new Theme(v, this.card, this.cardHover, this.cardBorder, this.cardBorderHover,
                 this.text, this.textSecondary, this.textMuted, this.textOnAccent,
@@ -148,8 +146,6 @@ public final class Theme {
                 this.sliderTrack, this.sliderTrackHover, this.sliderFill, this.sliderFillHover,
                 this.scrollbar, this.scrollbarHover);
     }
-
-    // ------------------------------------------------------------------ shape helpers
 
     /** Filled rounded rectangle. */
     public static void fillRound(GuiGraphicsExtractor gfx, float x, float y, float w, float h, float radius, int color) {

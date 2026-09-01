@@ -66,8 +66,6 @@ public class Toast {
         return new Toast(Component.literal(title), Component.literal(body), icon, tint, durationMs);
     }
 
-    // ------------------------------------------------------------------ lifecycle
-
     void setScreenBounds(int width, int height) {
         if (this.bornAt < 0) {
             this.bornAt = Util.getMillis();
@@ -83,8 +81,6 @@ public class Toast {
     void setSlot(int slot) {
         this.slot = slot;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     void extract(GuiGraphicsExtractor gfx, Theme theme, float partialTick) {
         if (this.bornAt < 0) {

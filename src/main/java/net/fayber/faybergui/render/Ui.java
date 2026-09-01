@@ -62,8 +62,6 @@ public final class Ui {
     private Ui() {
     }
 
-    // ---------------------------------------------------------------- text
-
     /** The Inter style whose rasterisation matches the current GUI scale one texel per pixel. */
     private static Style style(boolean bold) {
         int i = Math.clamp(Math.round(scale()), 1, MAX_SCALE);
@@ -166,8 +164,6 @@ public final class Ui {
         return lines;
     }
 
-    // ------------------------------------------------------------- shapes
-
     /** Physical pixels per GUI pixel. */
     public static float scale() {
         Minecraft mc = Minecraft.getInstance();
@@ -240,8 +236,6 @@ public final class Ui {
             roundRect(gfx, x - grow, y - grow, w + grow * 2.0f, h + grow * 2.0f, radius + grow, alpha << 24);
         }
     }
-
-    // --------------------------------------------------------------- internals
 
     /** Rounded rectangle in physical pixels; assumes the caller already scaled the matrix. */
     private static void roundRectDevice(GuiGraphicsExtractor gfx, int x, int y, int w, int h, int r, int color) {

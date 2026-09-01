@@ -47,8 +47,6 @@ public class SectionHeader extends AbstractWidget {
         return this;
     }
 
-    // ------------------------------------------------------------- fluent config
-
     /** Overrides the title colour. */
     public SectionHeader color(int color) {
         this.colorOverride = color;
@@ -65,8 +63,6 @@ public class SectionHeader extends AbstractWidget {
         this.theme = theme;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

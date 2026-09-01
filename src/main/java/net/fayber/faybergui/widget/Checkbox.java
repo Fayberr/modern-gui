@@ -100,8 +100,6 @@ public class Checkbox extends AbstractButton {
         this.setter.accept(next);
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public Checkbox theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -120,8 +118,6 @@ public class Checkbox extends AbstractButton {
         this.labelUncheckedOverride = unchecked;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

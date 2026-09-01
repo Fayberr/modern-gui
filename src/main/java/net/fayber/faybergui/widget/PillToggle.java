@@ -70,8 +70,6 @@ public class PillToggle extends AbstractButton {
         }
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public PillToggle theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -96,8 +94,6 @@ public class PillToggle extends AbstractButton {
         this.onChange = onChange;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

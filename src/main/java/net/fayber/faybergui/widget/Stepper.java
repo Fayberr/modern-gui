@@ -81,8 +81,6 @@ public class Stepper extends AbstractButton {
         return this;
     }
 
-    // ------------------------------------------------------------------ behaviour
-
     /** Applies {@code direction} steps (-1 or 1), clamped; returns false when already at the limit. */
     private boolean step(int direction) {
         int current = this.getter.get();
@@ -132,8 +130,6 @@ public class Stepper extends AbstractButton {
         }
         return 0;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

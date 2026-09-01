@@ -29,8 +29,6 @@ public class Spinner extends AbstractWidget {
         this.active = false;
     }
 
-    // ------------------------------------------------------------- fluent config
-
     /** Overrides the dot colour. */
     public Spinner color(int color) {
         this.colorOverride = color;
@@ -41,8 +39,6 @@ public class Spinner extends AbstractWidget {
         this.theme = theme;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

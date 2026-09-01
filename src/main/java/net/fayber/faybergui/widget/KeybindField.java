@@ -65,8 +65,6 @@ public class KeybindField extends AbstractButton {
         return this;
     }
 
-    // ------------------------------------------------------------------ key names
-
     /**
      * Resolves a bind code (a GLFW keycode, or {@code MOUSE_CODE_BASE + button} for mouse binds)
      * to a human-readable name such as {@code "A"}, {@code "F5"}, {@code "L Shift"} or
@@ -162,8 +160,6 @@ public class KeybindField extends AbstractButton {
         };
     }
 
-    // ------------------------------------------------------------------ behaviour
-
     //
     // The abstract onPress hook is unused: clicks are dispatched through the overridden
     // mouseClicked below (the widget is a selector, not a push button).
@@ -210,8 +206,6 @@ public class KeybindField extends AbstractButton {
         return x >= this.getX() && x < this.getX() + this.getWidth()
                 && y >= this.getY() && y < this.getY() + this.getHeight();
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

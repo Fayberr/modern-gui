@@ -67,8 +67,6 @@ public class ProgressBar extends AbstractWidget {
         this.active = false;
     }
 
-    // ------------------------------------------------------------- fluent config
-
     /** Sources the 0..1 value live, every frame. */
     public ProgressBar value(DoubleSupplier valueSupplier) {
         this.valueSupplier = valueSupplier;
@@ -105,8 +103,6 @@ public class ProgressBar extends AbstractWidget {
         this.theme = theme;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

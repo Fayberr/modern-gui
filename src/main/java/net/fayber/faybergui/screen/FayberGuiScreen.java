@@ -69,8 +69,6 @@ public abstract class FayberGuiScreen extends Screen {
         this.addRenderableWidget(this.popupHost);
     }
 
-    // ------------------------------------------------------------------ popup API
-
     /** Opens a dropdown menu popup anchored to the given rectangle. */
     public void openMenu(ListPopup menu) {
         if (this.popupHost != null) {
@@ -102,8 +100,6 @@ public abstract class FayberGuiScreen extends Screen {
             this.popupHost.tooltip(widget, Ui.uiBold(title), Ui.ui(body));
         }
     }
-
-    // ------------------------------------------------------------------ input routing
 
     @Override
     public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
@@ -140,15 +136,13 @@ public abstract class FayberGuiScreen extends Screen {
         super.onClose();
     }
 
-    // ------------------------------------------------------------------ rendering
-
     /**
      * Extracts the dim backdrop over the vanilla background, then the title, then the widgets
      * (which the host tops up). Override {@link #drawTitle} or call-and-extend to customise.
      */
     @Override
     public void extractRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
-        // Backdrop and title must be extracted BEFORE super (which extracts the widgets),
+        // Backdrop and title must be extracted before super (which extracts the widgets),
         // because within one stratum extraction order is draw order.
         gfx.fill(0, 0, this.width, this.height, this.theme.scrim);
         this.drawTitle(gfx);

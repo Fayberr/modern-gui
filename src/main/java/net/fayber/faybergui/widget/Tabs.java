@@ -73,8 +73,6 @@ public class Tabs extends AbstractWidget {
         this.setWidth(total);
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public Tabs theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -85,8 +83,6 @@ public class Tabs extends AbstractWidget {
         this.onChange = onChange;
         return this;
     }
-
-    // --------------------------------------------------------------------- input
 
     /** Clicks inside the bar select the tab under the pointer; the bar swallows the rest. */
     @Override
@@ -116,8 +112,6 @@ public class Tabs extends AbstractWidget {
         }
         return -1;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

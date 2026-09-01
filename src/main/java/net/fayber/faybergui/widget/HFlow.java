@@ -34,26 +34,20 @@ public class HFlow extends AbstractWidget {
 
     protected Theme theme = Theme.dark();
 
-    /** Flow children; their live positions are screen positions, rewritten every frame. */
     private final List<AbstractWidget> children = new ArrayList<>();
-/** Flow-space x/y per child, parallel to {@link #children}. */
+    // Flow-space x/y per child, parallel to children.
     private final List<int[]> flowPos = new ArrayList<>();
 
-    /** Child a drag is currently aimed at, captured on click. */
     private AbstractWidget pressedChild;
 
-    /** @param width the wrap width; children past it start a new line */
+    /** {@code width} is the wrap width; children past it start a new line. */
     public HFlow(int x, int y, int width) {
         super(x, y, width, 0, Component.empty());
     }
 
-    // ------------------------------------------------------------------- content
-
     /**
      * Appends a child and re-flows. The child's size must already be final (set its width and
      * height before adding); the flow never resizes its children.
-     *
-     * @return the flow, for chaining
      */
     public HFlow add(AbstractWidget child) {
         this.children.add(child);
@@ -85,8 +79,6 @@ public class HFlow extends AbstractWidget {
         this.setHeight(this.flowPos.isEmpty() ? 0 : y + lineH);
     }
 
-    // --------------------------------------------------------------------- input
-
     /** Clicks are forwarded to the child under the pointer; the flow swallows the rest. */
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
@@ -100,7 +92,6 @@ public class HFlow extends AbstractWidget {
         return true;
     }
 
-    /** Releases go to the child the press landed on (capture), or to any child under the pointer. */
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
         if (this.pressedChild != null) {
@@ -112,7 +103,7 @@ public class HFlow extends AbstractWidget {
         return child != null && child.mouseReleased(event);
     }
 
-    /** Drags go to the captured child, so a slider inside the flow keeps its pointer. */
+    // Drags go to the captured child, so a slider inside the flow keeps its pointer.
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (this.pressedChild != null) {
@@ -122,7 +113,6 @@ public class HFlow extends AbstractWidget {
         return child != null && child.mouseDragged(event, deltaX, deltaY);
     }
 
-    /** The child whose screen-space bounds contain the point, or null. */
     private AbstractWidget childAt(double mx, double my) {
         for (int i = 0; i < this.children.size(); i++) {
             AbstractWidget child = this.children.get(i);
@@ -137,12 +127,9 @@ public class HFlow extends AbstractWidget {
         return null;
     }
 
-    /** Flow children for screen focus/narration dispatch. */
     public List<? extends GuiEventListener> children() {
         return Collections.unmodifiableList(this.children);
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

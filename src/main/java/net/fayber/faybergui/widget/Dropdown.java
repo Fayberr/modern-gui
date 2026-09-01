@@ -69,8 +69,6 @@ public class Dropdown extends AbstractButton {
         return this;
     }
 
-    // ------------------------------------------------------------------ behaviour
-
     @Override
     public void onPress(InputWithModifiers input) {
         if (this.host != null) {

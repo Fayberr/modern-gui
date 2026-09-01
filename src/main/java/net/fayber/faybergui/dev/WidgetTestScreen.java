@@ -98,8 +98,6 @@ public final class WidgetTestScreen extends FayberGuiScreen {
         }
     }
 
-    // ------------------------------------------------------------------ page: buttons
-
     private void buildButtonsPage(int x) {
         int y = 68;
 
@@ -165,8 +163,6 @@ public final class WidgetTestScreen extends FayberGuiScreen {
                         () -> dropdownValue, v -> dropdownValue = v).host(this.popupHost())), x, y);
     }
 
-    // ------------------------------------------------------------------ page: inputs
-
     private void buildInputsPage(int x) {
         int y = 68;
 
@@ -196,8 +192,6 @@ public final class WidgetTestScreen extends FayberGuiScreen {
         this.addRenderableWidget(new IntSlider(x, y, 300,
                 Component.literal("Slider"), 0, 100, 5, () -> sliderValue, v -> sliderValue = v));
     }
-
-    // ------------------------------------------------------------------ page: layout
 
     private void buildLayoutPage(int x) {
         int y = 68;

@@ -60,11 +60,8 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
 
     protected Theme theme = Theme.dark();
 
-    /** Current glide velocity in GUI px/s; zero when the list is at rest. */
     private double glideVelocity;
-    /** Timestamp of the last drawn frame, for the time-normalised decay. */
     private long lastFrameMs = -1L;
-    /** True while the user is dragging the scrollbar thumb with the pointer held. */
     private boolean draggingScrollbar;
 
     protected CardList(Minecraft mc, int width, int height, int y0, int rowWidth) {
@@ -206,10 +203,9 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
         super.extractWidgetRenderState(gfx, mouseX, mouseY, partialTick);
     }
 
-    /** Advances the momentum glide and applies it to the list. */
     private void advanceGlide() {
-        // Track the frame gap on every frame so it is fresh when a wheel event arrives after
-        // a long idle period (a stale gap would teleport the glide on the first frame).
+        // Track the frame gap every frame so it's fresh when a wheel event arrives after a long
+        // idle period; a stale gap would teleport the glide on the first frame.
         long now = Util.getMillis();
         double dt = this.lastFrameMs < 0
                 ? 0.0
@@ -288,7 +284,7 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
         @Override
         @SuppressWarnings("unchecked")
         public List<? extends NarratableEntry> narratables() {
-            // Row children are always AbstractWidgets, which are GuiEventListener AND
+            // Row children are always AbstractWidgets, which are both GuiEventListener and
             // NarratableEntry, so the same list serves both dispatch paths.
             return (List<? extends NarratableEntry>) (List<?>) this.children();
         }

@@ -48,8 +48,6 @@ public class PopupHost extends AbstractWidget {
         return this;
     }
 
-    // ------------------------------------------------------------------ popups
-
     /** Opens a menu popup (a dropdown list) above everything else. */
     public void openMenu(ListPopup menu) {
         this.menus.add(menu);
@@ -97,8 +95,6 @@ public class PopupHost extends AbstractWidget {
     public void tooltip(AbstractWidget widget, Component title, Component body) {
         this.tooltips.add(new RichTooltip(widget, title, body));
     }
-
-    // ------------------------------------------------------------------ input
 
     /**
      * Never a click target of its own: the host is a screen-sized layer, and 26.1's dispatch
@@ -162,8 +158,6 @@ public class PopupHost extends AbstractWidget {
         }
         return false;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

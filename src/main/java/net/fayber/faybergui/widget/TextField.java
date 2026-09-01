@@ -98,8 +98,6 @@ public class TextField extends AbstractWidget {
         }
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public TextField theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -162,8 +160,6 @@ public class TextField extends AbstractWidget {
         return this.tooltip(Component.literal(tooltip));
     }
 
-    // ------------------------------------------------------------------- reading
-
     /** The raw text currently in the field. */
     public String getValue() {
         return this.box.getValue();
@@ -177,8 +173,6 @@ public class TextField extends AbstractWidget {
     public boolean isValid() {
         return this.validator.test(this.box.getValue());
     }
-
-    // ------------------------------------------------------------------- focus
 
     @Override
     public void setFocused(boolean focused) {
@@ -195,8 +189,6 @@ public class TextField extends AbstractWidget {
     // AbstractWidget does not implement. The handlers below forward to the inner box, which is
     // enough for a self-contained widget.
 
-    // ----------------------------------------------------------------- input
-
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (this.isActive()) {
@@ -205,7 +197,7 @@ public class TextField extends AbstractWidget {
                 // The inner box is shorter and narrower than the card (text padding on all
                 // sides), so a click on the padding passes our hit test but is dropped by
                 // EditBox's own. Returning false there would make 26.1's container dispatch
-                // (getChildAt routes to ONE child; keyboard focus is only granted when that
+                // (getChildAt routes to one child; keyboard focus is only granted when that
                 // child returns true) withhold screen focus, so the field lights up but
                 // typing goes nowhere until a click lands inside the box. Remap the click
                 // into the box instead: exact position for real hits, nearest edge for
@@ -249,8 +241,6 @@ public class TextField extends AbstractWidget {
         }
         return super.charTyped(event);
     }
-
-    // ---------------------------------------------------------------- rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

@@ -73,8 +73,6 @@ public class Modal {
         return new Modal(title, body, buttons);
     }
 
-    // ------------------------------------------------------------------ layout
-
     private void layout(Theme theme) {
         if (this.bodyLines != null) {
             return;
@@ -94,8 +92,6 @@ public class Modal {
         this.x = (mc.getWindow().getGuiScaledWidth() - this.width) / 2;
         this.y = (mc.getWindow().getGuiScaledHeight() - this.height) / 2;
     }
-
-    // ------------------------------------------------------------------ input
 
     /** @return true always: the modal owns the whole screen while it is open. */
     public boolean handleClick(PopupHost host, double mouseX, double mouseY, int button) {
@@ -135,8 +131,6 @@ public class Modal {
         }
         return true;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     public void extract(GuiGraphicsExtractor gfx, Theme theme, int mouseX, int mouseY, float partialTick) {
         this.layout(theme);

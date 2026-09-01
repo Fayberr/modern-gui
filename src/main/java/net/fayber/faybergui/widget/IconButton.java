@@ -57,8 +57,6 @@ public class IconButton extends AbstractButton {
         this.onPress.run();
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public IconButton theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -90,8 +88,6 @@ public class IconButton extends AbstractButton {
     public IconButton tooltip(String tooltip) {
         return this.tooltip(Component.literal(tooltip));
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

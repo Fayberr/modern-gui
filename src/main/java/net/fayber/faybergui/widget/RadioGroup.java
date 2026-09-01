@@ -106,8 +106,6 @@ public class RadioGroup extends AbstractButton {
         return this;
     }
 
-    // ------------------------------------------------------------------ geometry
-
     /**
      * Writes the hit rectangle of row {@code index} into {@code out} as
      * {@code [x, y, width, height]} in screen coordinates.
@@ -133,8 +131,6 @@ public class RadioGroup extends AbstractButton {
         return mx >= rect[0] && mx < rect[0] + rect[2] && my >= rect[1] && my < rect[1] + rect[3];
     }
 
-    // ------------------------------------------------------------------ behaviour
-
     //
     // The abstract onPress hook is unused: clicks are dispatched through the overridden
     // mouseClicked below (the widget is a selector, not a push button).
@@ -156,8 +152,6 @@ public class RadioGroup extends AbstractButton {
         }
         return super.mouseClicked(event, doubleClick);
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

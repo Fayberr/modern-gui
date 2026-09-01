@@ -87,8 +87,6 @@ public abstract class StyledSlider extends AbstractSliderButton {
         return Math.clamp(snapped, this.min, this.max);
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public StyledSlider theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -119,11 +117,9 @@ public abstract class StyledSlider extends AbstractSliderButton {
         }
     }
 
-    // ------------------------------------------------------------------ behaviour
-
     @Override
     public void onClick(MouseButtonEvent event, boolean doubleClick) {
-        // Do NOT call super: it maps the cursor onto vanilla's own 8px handle trajectory
+        // Don't call super: it maps the cursor onto vanilla's own 8px handle trajectory
         // ((mouseX - getX() - 4) / (width - 8)), which disagrees with the drawn track and puts
         // the knob up to ~13px off the cursor at the track ends. Map with the drawn geometry.
         this.draggingKnob = true;

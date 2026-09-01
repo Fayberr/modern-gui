@@ -80,8 +80,6 @@ public class ListPopup {
         return net.minecraft.client.Minecraft.getInstance();
     }
 
-    // ------------------------------------------------------------------ input
-
     /** @return true when the click was inside the panel (and handled). */
     public boolean handleClick(double mouseX, double mouseY, int button) {
         if (mouseX < this.x || mouseX >= this.x + this.width || mouseY < this.y || mouseY >= this.y + this.height) {
@@ -124,8 +122,6 @@ public class ListPopup {
     public boolean isDone() {
         return this.done;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     public void extract(GuiGraphicsExtractor gfx, Theme theme, int mouseX, int mouseY, float partialTick) {
         this.position(theme);

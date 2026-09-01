@@ -76,8 +76,6 @@ public class NumberField extends TextField {
         return true;
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public NumberField theme(Theme theme) {
         super.theme(theme);
         return this;
@@ -102,8 +100,6 @@ public class NumberField extends TextField {
         this.arrowKeysStep = arrowKeysStep;
         return this;
     }
-
-    // ------------------------------------------------------------------ behaviour
 
     /** Parses, clamps, snaps and writes back the canonical value; fires the change hook. */
     public void commit() {

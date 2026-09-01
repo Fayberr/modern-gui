@@ -44,8 +44,6 @@ public class Divider extends AbstractWidget {
         return new Divider(x, y, width, Ui.ui(caption));
     }
 
-    // ------------------------------------------------------------- fluent config
-
     /** Overrides the hairline colour. */
     public Divider color(int color) {
         this.colorOverride = color;
@@ -62,8 +60,6 @@ public class Divider extends AbstractWidget {
         this.theme = theme;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     private int lineColor() {
         return this.colorOverride >= 0 ? this.colorOverride : Theme.darken(this.theme.cardBorder, 0.25f);

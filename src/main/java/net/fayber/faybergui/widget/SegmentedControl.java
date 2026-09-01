@@ -110,8 +110,6 @@ public class SegmentedControl extends AbstractButton {
         return this;
     }
 
-    // ------------------------------------------------------------------ geometry
-
     /** Left edge of segment {@code index} (the pill slides along these positions). */
     private float segmentX(int index) {
         float x = this.getX() + INSET;
@@ -120,8 +118,6 @@ public class SegmentedControl extends AbstractButton {
         }
         return x;
     }
-
-    // ------------------------------------------------------------------ behaviour
 
     //
     // The abstract onPress hook is unused: clicks are dispatched through the overridden
@@ -147,8 +143,6 @@ public class SegmentedControl extends AbstractButton {
         }
         return super.mouseClicked(event, doubleClick);
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

@@ -15,78 +15,49 @@ import java.util.List;
 
 /**
  * A panel whose children scroll horizontally, for timelines, galleries and toolbars that are
- * wider than the screen. Children live in content coordinates (their positions are relative to
- * the content, not the panel), are repositioned every frame from the current scroll offset, and
- * are clipped to the panel with a scissor so partially visible children end cleanly at the edges.
+ * wider than the screen. Children live in content coordinates and are repositioned every frame
+ * from the current scroll offset, clipped to the panel with a scissor.
  *
- * <p>Scrolling has the same momentum as {@link net.fayber.faybergui.list.CardList}: the wheel
- * adds velocity and the offset coasts to rest with an exponential, time-normalised decay, so the
- * feel is identical at any frame rate. Authoritative scroll changes ({@link #setScrollAmount})
- * cancel the glide and apply instantly. The offset is fractional while gliding; children are
- * drawn through a pose shifted back by the dropped fraction (true sub-pixel motion, hit-testing
- * keeps the int positions, the difference is under one GUI pixel).
+ * <p>Scrolling has the same wheel-driven momentum as {@link net.fayber.faybergui.list.CardList}:
+ * the wheel adds velocity and the offset coasts to rest with a time-normalised decay.
+ * Authoritative changes ({@link #setScrollAmount}) cancel the glide and apply instantly.
  *
- * <p>Children's content coordinates are captured when they are added (or by {@link #pack(int)},
- * which lays them in a row with a fixed gap); callers can set any arrangement they like (a
- * timeline with variable event spacing, for example) before adding. Children positioned beyond
- * the content width are still clipped at the panel edge, so the content width should cover
- * everything the caller adds; use {@link #syncContentCoords()} after moving or resizing children
- * through other means.
- *
- * <p>Keyboard input is deliberately not forwarded: the panel is a pointer-first container, and
- * children that need keys (a text field inside a gallery) should be focussed by the screen, which
- * dispatches through {@link #children()}.
+ * <p>Keyboard input is deliberately not forwarded; the panel is a pointer-first container, and
+ * children that need keys should be focussed by the screen through {@link #children()}.
  */
 public class HorizontalScrollPanel extends AbstractWidget {
-    /** Exponential velocity decay of the wheel glide (per second); a notch coasts ~0.4s. */
     private static final double SCROLL_FRICTION = 10.0;
-    /** Glide speed below which the coast has visibly ended and stops. */
     private static final double SCROLL_STOP = 6.0;
-    /** Velocity cap so a fast spin does not launch the content off-screen. */
+    // Velocity cap so a fast spin doesn't launch the content off-screen.
     private static final double SCROLL_MAX_SPEED = 4000.0;
-    /** Frame gap cap so a stall never teleports the glide. */
+    // Frame gap cap so a stall never teleports the glide.
     private static final double MAX_FRAME_SECONDS = 0.1;
-    /** GUI pixels a single wheel notch travels in total (v0 = distance * friction). */
     private static final double SCROLL_RATE = 60.0;
-    /** Vertical insets of the scrollbar: 4px bar sitting 2px above the bottom edge. */
     private static final float BAR_HEIGHT = 4.0f;
     private static final float BAR_INSET = 2.0f;
-    /** Shortest sensible thumb so a huge content width keeps something to grab. */
     private static final float MIN_THUMB_WIDTH = 12.0f;
 
     protected Theme theme = Theme.dark();
 
-    /** Width of the content behind the panel; defaults to the panel width (nothing to scroll). */
     private int contentWidth;
-    /** Fractional scroll offset in content px; always in [0, maxScroll()]. */
     private double scroll;
-    /** Current glide velocity in GUI px/s; zero when the panel is at rest. */
     private double glideVelocity;
-    /** Timestamp of the last drawn frame, for the time-normalised decay. */
     private long lastFrameMs = -1L;
 
-    /** Children of the panel; their live positions are screen positions, rewritten every frame. */
     private final List<AbstractWidget> children = new ArrayList<>();
-/** Content-space x/y per child, parallel to {@link #children}; re-captured by {@link #syncContentCoords()}. */
+    // Content-space x/y per child, parallel to children; re-captured by syncContentCoords().
     private final List<int[]> childPos = new ArrayList<>();
-    /** Child a drag is currently aimed at, captured on click. */
     private AbstractWidget pressedChild;
-    /** True while the user is dragging the scrollbar thumb with the pointer held. */
     private boolean draggingScrollbar;
 
     public HorizontalScrollPanel(int x, int y, int w, int h) {
         super(x, y, w, h, net.minecraft.network.chat.Component.empty());
     }
 
-    // ------------------------------------------------------------------- content
-
     /**
      * Appends a child. Its current position is captured as relative to the content: {@code (0, 0)}
-     * is the content's top-left, which appears at the panel's top-left when the scroll offset is 0.
-     * Callers position the child before adding (variable event spacing, gallery rows) or call
-     * {@link #pack(int)} after adding.
-     *
-     * @return the panel, for chaining
+     * is the content's top-left. Callers position the child before adding, or call
+     * {@link #pack(int)} afterward.
      */
     public HorizontalScrollPanel add(AbstractWidget child) {
         this.children.add(child);
@@ -95,10 +66,8 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return this;
     }
 
-    /**
-     * Re-captures the content coordinates of every child from its current position. Call this
-     * after moving or resizing children through other means than {@link #pack(int)}.
-     */
+    /** Re-captures the content coordinates of every child; call after moving or resizing them
+     * through means other than {@link #pack(int)}. */
     public void syncContentCoords() {
         this.childPos.clear();
         this.contentWidth = 0;
@@ -126,11 +95,8 @@ public class HorizontalScrollPanel extends AbstractWidget {
 
     /**
      * Scrolls minimally so the child is fully inside the viewport; a no-op when it already is or
-     * when there is nothing to scroll. Instant, like every authoritative scroll change. Meant for
-     * selection-follows-content: a toolbar or tab strip in the panel calls this after the user
-     * picks a child that may sit past the clipped edge.
-     *
-     * @return true when the offset moved
+     * when there is nothing to scroll. Meant for selection-follows-content, e.g. a tab strip
+     * calling this after the user picks a child that may sit past the clipped edge.
      */
     public boolean ensureVisible(AbstractWidget child) {
         int index = this.children.indexOf(child);
@@ -148,37 +114,27 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return true;
     }
 
-    /** The scrollable content width in px. */
     public int getContentWidth() {
         return this.contentWidth;
     }
 
-    // ----------------------------------------------------------------- scrolling
-
-    /** The current scroll offset in px (fractional while gliding). */
+    /** Fractional while gliding. */
     public double getScrollAmount() {
         return this.scroll;
     }
 
-    /** Maximum scroll offset: how far the content extends past the panel. */
     public double maxScroll() {
         return Math.max(0, this.contentWidth - this.getWidth());
     }
 
-    /**
-     * Jumps to a scroll offset, cancelling any glide. Authoritative changes are instant so the
-     * thumb keeps up with the pointer or the code that moved it.
-     */
+    /** Jumps to a scroll offset, cancelling any glide. */
     public void setScrollAmount(double amount) {
         this.glideVelocity = 0.0;
         this.scroll = Math.clamp(amount, 0.0, this.maxScroll());
     }
 
-    /**
-     * Wheel input over the panel adds glide velocity (both axes drive the horizontal offset, so a
-     * plain wheel and a trackpad sideways swipe both work); the offset coasts in
-     * {@link #advanceGlide}. Outside the panel the event falls through to the screen.
-     */
+    // Both axes drive the horizontal offset, so a plain wheel and a trackpad sideways swipe
+    // both work; the offset coasts in advanceGlide(). Outside the panel it falls through to the screen.
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
         if (!this.isMouseOver(mouseX, mouseY) || this.maxScroll() <= 0.0) {
@@ -191,10 +147,9 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return true;
     }
 
-    /** Advances the momentum glide; called once per frame before drawing. */
     private void advanceGlide() {
-        // Track the frame gap on every frame so it is fresh when a wheel event arrives after
-        // a long idle period (a stale gap would teleport the glide on the first frame).
+        // Track the frame gap every frame so it's fresh when a wheel event arrives after a long
+        // idle period; a stale gap would teleport the glide on the first frame.
         long now = Util.getMillis();
         double dt = this.lastFrameMs < 0
                 ? 0.0
@@ -216,14 +171,8 @@ public class HorizontalScrollPanel extends AbstractWidget {
         this.scroll = clamped;
     }
 
-    // --------------------------------------------------------------------- input
-
-    /**
-     * Clicks inside the panel are forwarded to the child under the pointer (in screen coordinates
-     * after the scroll offset); the panel swallows the event either way so clicks in the padding
-     * do not fall through to widgets behind it. The scrollbar strip is the panel's own: the thumb
-     * is drawn there, and a grab starts a thumb drag (grab-and-centre) instead of reaching a child.
-     */
+    // The panel swallows clicks either way so clicks in the padding don't fall through to
+    // widgets behind it. Grabbing the scrollbar strip starts a thumb drag instead of reaching a child.
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (!this.isMouseOver(event.x(), event.y())) {
@@ -241,14 +190,13 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return true;
     }
 
-    /** The scrollbar strip: the horizontal band the thumb is drawn in, along the bottom. */
     private boolean overScrollbar(double x, double y) {
         float trackY = this.getY() + this.getHeight() - BAR_HEIGHT - BAR_INSET;
         return y >= trackY - 3.0 && y < this.getY() + this.getHeight()
                 && x >= this.getX() && x < this.getX() + this.getWidth();
     }
 
-    /** Maps a pointer x to the scroll amount that centres the thumb under it. */
+    // Maps a pointer x to the scroll amount that centres the thumb under it.
     private double scrollForPointerX(double pointerX) {
         float trackX = this.getX() + BAR_INSET;
         float trackW = this.getWidth() - BAR_INSET * 2.0f;
@@ -275,7 +223,6 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return child != null && child.mouseReleased(event);
     }
 
-    /** Drags move the thumb while one is grabbed; otherwise they go to the captured child. */
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (this.draggingScrollbar) {
@@ -289,7 +236,6 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return child != null && child.mouseDragged(event, deltaX, deltaY);
     }
 
-    /** The child whose screen-space bounds contain the point, or null. */
     private AbstractWidget childAt(double mx, double my) {
         int offset = this.getX() - (int) this.scroll;
         for (int i = 0; i < this.children.size(); i++) {
@@ -305,12 +251,9 @@ public class HorizontalScrollPanel extends AbstractWidget {
         return null;
     }
 
-    /** Children for screen focus/narration dispatch; they are both listeners and narratables. */
     public List<? extends GuiEventListener> children() {
         return Collections.unmodifiableList(this.children);
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
@@ -319,10 +262,8 @@ public class HorizontalScrollPanel extends AbstractWidget {
         double frac = this.scroll - Math.floor(this.scroll);
         int scrollPx = (int) this.scroll;
 
-        // Children are repositioned every frame from their stored content coords (scroll and
-        // resize-safe), then extract through their final extractRenderState. The scissor is
-        // enabled before the pose shift so the clip rectangle stays on the panel; the sub-pixel
-        // translate moves only the children inside it.
+        // Scissor is enabled before the pose shift so the clip rectangle stays on the panel;
+        // the sub-pixel translate moves only the children inside it.
         gfx.enableScissor(this.getX(), this.getY(),
                 this.getX() + this.getWidth(), this.getY() + this.getHeight());
         gfx.pose().pushMatrix();
@@ -339,11 +280,8 @@ public class HorizontalScrollPanel extends AbstractWidget {
         this.extractScrollbar(gfx, mouseX, mouseY);
     }
 
-    /**
-     * Slim rounded scrollbar at the bottom inside a 2px inset, only when there is something to
-     * scroll. The thumb is drawn from the continuous scroll offset, so it glides with the content
-     * instead of stair-stepping.
-     */
+    // The thumb is drawn from the continuous scroll offset, so it glides with the content
+    // instead of stair-stepping.
     private void extractScrollbar(GuiGraphicsExtractor gfx, int mouseX, int mouseY) {
         if (this.maxScroll() <= 0.0) {
             return;

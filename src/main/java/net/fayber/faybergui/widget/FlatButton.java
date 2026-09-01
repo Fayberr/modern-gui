@@ -75,8 +75,6 @@ public class FlatButton extends AbstractButton {
         this.onPress.run();
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public FlatButton theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -114,8 +112,6 @@ public class FlatButton extends AbstractButton {
         this.textOverride = color;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractContents(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

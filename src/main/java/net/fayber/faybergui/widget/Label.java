@@ -59,8 +59,6 @@ public class Label extends AbstractWidget {
         this.active = false;
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public Label style(Style style) {
         this.style = style;
         return this;
@@ -81,8 +79,6 @@ public class Label extends AbstractWidget {
         this.theme = theme;
         return this;
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {

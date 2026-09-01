@@ -65,8 +65,6 @@ public class TextArea extends AbstractWidget {
         this.lines.add("");
     }
 
-    // ------------------------------------------------------------- fluent config
-
     public TextArea theme(Theme theme) {
         this.theme = theme;
         return this;
@@ -112,8 +110,6 @@ public class TextArea extends AbstractWidget {
         return this;
     }
 
-    // ------------------------------------------------------------------- reading
-
     /** The full content, lines joined by newlines. */
     public String getText() {
         return this.text;
@@ -134,8 +130,6 @@ public class TextArea extends AbstractWidget {
         return total;
     }
 
-    // ------------------------------------------------------------------- focus
-
     @Override
     public void setFocused(boolean focused) {
         this.focused = focused;
@@ -148,8 +142,6 @@ public class TextArea extends AbstractWidget {
 
     // No children() override: in 26.1 children() lives on ContainerEventHandler, which
     // AbstractWidget does not implement. There is no child widget anyway.
-
-    // ----------------------------------------------------------------- helpers
 
     private int lineHeight() {
         return Ui.font().lineHeight;
@@ -192,8 +184,6 @@ public class TextArea extends AbstractWidget {
         this.caretLine = Math.clamp(this.caretLine, 0, this.lines.size() - 1);
         this.caretCol = Math.clamp(this.caretCol, 0, this.lines.get(this.caretLine).length());
     }
-
-    // ----------------------------------------------------------------- editing
 
     /** Inserts text at the caret, turning newlines into line breaks, respecting the char cap. */
     private void insert(String inserted) {
@@ -269,8 +259,6 @@ public class TextArea extends AbstractWidget {
         this.scrollToCaret();
         this.refreshText();
     }
-
-    // ------------------------------------------------------------------- input
 
     @Override
     public boolean charTyped(CharacterEvent event) {
@@ -408,8 +396,6 @@ public class TextArea extends AbstractWidget {
         }
         this.caretCol = col;
     }
-
-    // ---------------------------------------------------------------- rendering
 
     @Override
     protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
