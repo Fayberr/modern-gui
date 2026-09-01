@@ -122,6 +122,21 @@ public abstract class StyledSlider extends AbstractSliderButton {
         }
     }
 
+    /**
+     * Re-reads the backing value and re-syncs the knob when it was written outside this widget
+     * (a reset-to-default button, a Cancel/ESC restore, another UI sharing the same config).
+     * Called every frame while the user is not dragging; the typed sliders compare the getter
+     * against the value they last wrote, so the steady-state cost is one cheap getter read.
+     */
+    protected void syncExternal() {
+    }
+
+    /** Points the knob at an externally written value; the knob glides there like after a key step. */
+    protected final void externalValue(double v) {
+        this.value = to01(this.min, this.max, v);
+        this.updateMessage();
+    }
+
     @Override
     public void onClick(MouseButtonEvent event, boolean doubleClick) {
         // Don't call super: it maps the cursor onto vanilla's own 8px handle trajectory
@@ -177,6 +192,11 @@ public abstract class StyledSlider extends AbstractSliderButton {
 
     @Override
     public void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float partialTick) {
+        // Pick up values written outside the widget (reset button, cancel/restore) while the
+        // user is not dragging; during a drag the knob follows the cursor, not the getter.
+        if (!this.draggingKnob) {
+            this.syncExternal();
+        }
         // Raw 1:1 follow while dragging; glide onto the written step the rest of the time.
         // The glide is time-normalised so the feel is identical at any frame rate; the frame
         // gap is tracked on every frame so it is fresh when a drag ends.

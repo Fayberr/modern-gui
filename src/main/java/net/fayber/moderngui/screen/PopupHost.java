@@ -27,8 +27,8 @@ public class PopupHost extends AbstractWidget {
 
     /** Open menu popups, stacked (a submenu would push a second entry); index 0 = bottom. */
     private final List<ListPopup> menus = new ArrayList<>();
-    /** Open modal dialog, or null. At most one; opening a new one replaces it. */
-    private Modal modal;
+    /** Open modal layer, or null. At most one; opening a new one replaces it. */
+    private ModalLayer modal;
     /** Toast queue, drawn top right; the host retires finished toasts. */
     private final List<Toast> toasts = new ArrayList<>();
     /** Rich tooltip registrations (widget -> data), checked while extracting. */
@@ -68,8 +68,8 @@ public class PopupHost extends AbstractWidget {
         this.menus.clear();
     }
 
-    /** Opens (or replaces) the modal dialog. */
-    public void showModal(Modal modal) {
+    /** Opens (or replaces) the modal layer: a plain dialog or an interactive one. */
+    public void showModal(ModalLayer modal) {
         this.modal = modal;
         this.closeAllMenus();
     }
@@ -111,13 +111,13 @@ public class PopupHost extends AbstractWidget {
      * Front-of-queue mouse handling: returns true when a popup consumed the click (the screen
      * then must not dispatch it to the widgets below). Called by ModernGuiScreen before super.
      */
-    public boolean handleClick(double mouseX, double mouseY, int button) {
+    public boolean handleClick(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
         if (this.modal != null) {
-            return this.modal.handleClick(this, mouseX, mouseY, button);
+            return this.modal.handleClick(this, event, doubleClick);
         }
         if (!this.menus.isEmpty()) {
             ListPopup top = this.menus.get(this.menus.size() - 1);
-            if (top.handleClick(mouseX, mouseY, button)) {
+            if (top.handleClick(event.x(), event.y(), event.button())) {
                 if (top.isDone()) {
                     this.closeTopMenu();
                 }
@@ -128,6 +128,16 @@ public class PopupHost extends AbstractWidget {
             return true;
         }
         return false;
+    }
+
+    /** Front-of-queue drag handling; only a modal layer can be a drag target. */
+    public boolean handleDrag(net.minecraft.client.input.MouseButtonEvent event, double deltaX, double deltaY) {
+        return this.modal != null && this.modal.handleDrag(this, event, deltaX, deltaY);
+    }
+
+    /** Front-of-queue release handling; a modal layer uses it to end its drags. */
+    public boolean handleRelease(net.minecraft.client.input.MouseButtonEvent event) {
+        return this.modal != null && this.modal.handleRelease(this, event);
     }
 
     /** Front-of-queue keyboard handling; returns true when a popup consumed the key. */
@@ -157,6 +167,15 @@ public class PopupHost extends AbstractWidget {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Front-of-queue character handling; returns true when the modal layer consumed the typed
+     * character. The screen routes charTyped here first so text fields inside a modal (the
+     * colour picker's hex field) receive typing even though they are not screen children.
+     */
+    public boolean handleChar(net.minecraft.client.input.CharacterEvent event) {
+        return this.modal != null && this.modal.handleChar(this, event);
     }
 
     @Override

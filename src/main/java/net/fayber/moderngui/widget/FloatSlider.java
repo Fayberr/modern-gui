@@ -9,12 +9,15 @@ import java.util.function.Supplier;
 public class FloatSlider extends StyledSlider {
     private final Supplier<Float> getter;
     private final Consumer<Float> setter;
+    /** The value this widget last wrote, so external writes (reset, restore) are detectable. */
+    private float lastKnown;
 
     public FloatSlider(int x, int y, int w, Component label, float min, float max, float step,
                        Supplier<Float> getter, Consumer<Float> setter) {
         super(x, y, w, label, min, max, step, getter.get());
         this.getter = getter;
         this.setter = setter;
+        this.lastKnown = getter.get();
     }
 
     @Override
@@ -25,10 +28,20 @@ public class FloatSlider extends StyledSlider {
     @Override
     protected void applyValue() {
         float v = (float) this.snappedValue();
+        this.lastKnown = v;
         this.setter.accept(v);
         this.fireChange();
         // No knob re-snap here: the knob follows the raw drag position (StyledSlider) and only
         // the written value snaps, so dragging feels smooth.
+    }
+
+    @Override
+    protected void syncExternal() {
+        float external = this.getter.get();
+        if (external != this.lastKnown) {
+            this.lastKnown = external;
+            this.externalValue(external);
+        }
     }
 
     @Override

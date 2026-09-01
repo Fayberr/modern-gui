@@ -104,10 +104,28 @@ public abstract class ModernGuiScreen extends Screen {
     @Override
     public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
         // Popups go first: an open menu or modal swallows clicks that would fall through.
-        if (this.popupHost != null && this.popupHost.handleClick(event.x(), event.y(), event.button())) {
+        if (this.popupHost != null && this.popupHost.handleClick(event, doubleClick)) {
             return true;
         }
         return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double deltaX, double deltaY) {
+        // A modal layer with a drag surface (the colour picker's square and bars) takes drags
+        // while it is open; the widgets underneath stay frozen.
+        if (this.popupHost != null && this.popupHost.modalOpen()) {
+            return this.popupHost.handleDrag(event, deltaX, deltaY);
+        }
+        return super.mouseDragged(event, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
+        if (this.popupHost != null && this.popupHost.modalOpen()) {
+            return this.popupHost.handleRelease(event);
+        }
+        return super.mouseReleased(event);
     }
 
     @Override
@@ -116,6 +134,16 @@ public abstract class ModernGuiScreen extends Screen {
             return true;
         }
         return super.keyPressed(event);
+    }
+
+    @Override
+    public boolean charTyped(net.minecraft.client.input.CharacterEvent event) {
+        // A modal layer with a text field (the colour picker) takes typing while it is open;
+        // the underlying screen keeps whatever focus it had, so route chars before the dispatch.
+        if (this.popupHost != null && this.popupHost.modalOpen()) {
+            return this.popupHost.handleChar(event);
+        }
+        return super.charTyped(event);
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.util.List;
  * <p>Promise-style helpers: {@link #confirm} takes an on-confirm and an on-cancel callback
  * (either may be null), and {@link #info} shows a single OK button.
  */
-public class Modal {
+public class Modal implements ModalLayer {
     private static final int MIN_WIDTH = 240;
     private static final int MAX_WIDTH = 320;
     private static final float RADIUS = 10.0f;
@@ -94,10 +94,11 @@ public class Modal {
     }
 
     /** @return true always: the modal owns the whole screen while it is open. */
-    public boolean handleClick(PopupHost host, double mouseX, double mouseY, int button) {
+    @Override
+    public boolean handleClick(PopupHost host, net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
         this.layout(host.theme);
         for (Button b : this.buttons) {
-            if (mouseX >= b.x && mouseX < b.x + b.width && mouseY >= b.y && mouseY < b.y + b.height) {
+            if (event.x() >= b.x && event.x() < b.x + b.width && event.y() >= b.y && event.y() < b.y + b.height) {
                 if (b.closeOnPress) {
                     host.closeModal();
                 }
@@ -111,6 +112,7 @@ public class Modal {
         return true;
     }
 
+    @Override
     public boolean handleKey(PopupHost host, net.minecraft.client.input.KeyEvent event) {
         if (event.isEscape()) {
             // ESC cancels: run the last button's action if it is a cancel-style ghost, else just close.
@@ -132,6 +134,7 @@ public class Modal {
         return true;
     }
 
+    @Override
     public void extract(GuiGraphicsExtractor gfx, Theme theme, int mouseX, int mouseY, float partialTick) {
         this.layout(theme);
         var mc = net.minecraft.client.Minecraft.getInstance();
