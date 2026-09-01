@@ -1,9 +1,9 @@
-# Fayber GUI - Modrinth page copy
+# Modern GUI - Modrinth page copy
 
-Source of truth for the text on https://modrinth.com/mod/fayber-gui.
+Source of truth for the text on https://modrinth.com/mod/modern-gui-lib.
 Update here first, then run:
 
-    modrinth copy fayber-gui modrinth-page.md
+    modrinth copy modern-gui-lib modrinth-page.md
 
 The `## description` and `## body` sections are what gets uploaded.
 The `#` title line and the parenthetical note below are local only.
@@ -15,9 +15,9 @@ A widget library for Minecraft mods: dark rounded cards, anti-aliased shapes and
 
 ## body (full page)
 
-# Fayber GUI
+# Modern GUI
 
-A widget library that gives Minecraft mods one shared look: dark rounded cards, shapes drawn at physical pixel resolution, and a bundled Inter font. Players usually meet it as a dependency of mods that use it. On its own it adds one command, `/faybergui`, which opens a showcase screen with every widget in the catalog.
+A widget library that gives Minecraft mods one shared look: dark rounded cards, shapes drawn at physical pixel resolution, and a bundled Inter font. Players usually meet it as a dependency of mods that use it. On its own it adds one command, `/moderngui`, which opens a showcase screen with every widget in the catalog.
 
 ## Rendering
 
@@ -34,6 +34,6 @@ A widget library that gives Minecraft mods one shared look: dark rounded cards, 
 
 ## For mod developers
 
-- Maven dependency `net.fayber:fayber-gui`. Depend on it directly, or bundle it with Loom's jar-in-jar include, whichever fits.
+- Maven dependency `net.fayber:modern-gui`. Depend on it directly, or bundle it with Loom's jar-in-jar include, whichever fits.
 - Zero mixins; vanilla plus Fabric API only, safe to bundle.
 - LGPL-3.0-or-later. Inter is bundled under the SIL Open Font License; icons are derived from Lucide.

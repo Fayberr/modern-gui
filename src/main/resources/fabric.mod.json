@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "faybergui",
+	"id": "moderngui",
 	"version": "${version}",
-	"name": "Fayber GUI",
+	"name": "Modern GUI",
 	"description": "A widget library for Minecraft mods: dark rounded cards, anti-aliased shapes and a bundled Inter font.",
 	"authors": [
 		"Fayber"
@@ -12,11 +12,11 @@
 		"sources": "https://github.com/Fayberr/fayber-gui"
 	},
 	"license": "LGPL-3.0-or-later",
-	"icon": "assets/faybergui/icon.png",
+	"icon": "assets/moderngui/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"net.fayber.faybergui.FayberGuiClient"
+			"net.fayber.moderngui.ModernGuiClient"
 		]
 	},
 	"depends": {

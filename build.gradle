@@ -23,18 +23,18 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
-// Dev-only design workbench: `./gradlew runClient -PfgPreview=true` boots the client at a fixed
+// Dev-only design workbench: `./gradlew runClient -PmgPreview=true` boots the client at a fixed
 // window size and auto-opens the widget catalog test screen (see tools/preview.sh, which grabs a
 // frame off an Xvfb display so the look can be iterated on headlessly).
 loom {
 	runs {
 		client {
 			programArgs '--width', '1280', '--height', '720'
-			if (project.hasProperty('fgPreview')) {
-				vmArg '-Dfaybergui.preview=true'
+			if (project.hasProperty('mgPreview')) {
+				vmArg '-Dmoderngui.preview=true'
 			}
-			if (project.hasProperty('fgPreviewScroll')) {
-				vmArg "-Dfaybergui.previewScroll=${project.property('fgPreviewScroll')}"
+			if (project.hasProperty('mgPreviewScroll')) {
+				vmArg "-Dmoderngui.previewScroll=${project.property('mgPreviewScroll')}"
 			}
 		}
 	}
@@ -68,12 +68,12 @@ jar {
 }
 
 // Loom wires the remapped (mojmap-named) jar into components.java, so consumers can depend on
-// this as a plain `compileOnly "net.fayber:fayber-gui:<version>"` from mavenLocal. Fayber Config
-// additionally `include`s it, which embeds it as a jar-in-jar so users still download one jar.
+// this as a plain `compileOnly "net.fayber:modern-gui:<version>"` from mavenLocal. Modern Config
+// declares it as a regular dependency (not jar-in-jar), so one standalone copy serves every consumer.
 publishing {
 	publications {
 		create('mavenJava', MavenPublication) {
-			// Publish under fayber-gui (the archivesBaseName), not the project name.
+			// Publish under modern-gui (the archivesBaseName), not the project name.
 			artifactId = project.archives_base_name
 			from components.java
 		}

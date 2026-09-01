@@ -13,9 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Generates assets/faybergui/textures/gui/icons.png: an atlas of the UI glyphs, rendered with
+ * Generates assets/moderngui/textures/gui/icons.png: an atlas of the UI glyphs, rendered with
  * real anti-aliasing at 3x the 24-unit Lucide grid. The game draws cells downscaled with bilinear
- * filtering (see net.fayber.faybergui.widget.Icons), so icons stay smooth at every GUI scale
+ * filtering (see net.fayber.moderngui.widget.Icons), so icons stay smooth at every GUI scale
  * instead of being re-rasterised from primitives each frame.
  *
  * <p>This is a re-brandable sample generator, copied from the Waypoints mod's generator with the
@@ -36,7 +36,7 @@ public class GenIcons {
 
     static final int SCALE = CELL / 24;
 
-    // atlas order must match the indices in net.fayber.faybergui.widget.Icons
+    // atlas order must match the indices in net.fayber.moderngui.widget.Icons
     static final String[][] ICONS = {
             // 0 chevron-down
             {"m6 9 6 6 6-6"},
@@ -113,7 +113,7 @@ public class GenIcons {
         g.dispose();
 
         File out = new File(args.length > 0 ? args[0]
-                : "src/main/resources/assets/faybergui/textures/gui/icons.png");
+                : "src/main/resources/assets/moderngui/textures/gui/icons.png");
         ImageIO.write(img, "png", out);
         System.out.println("wrote " + out.getAbsolutePath() + " (" + out.length() + " bytes, "
                 + ICONS.length + " icons, " + (COLS * CELL) + "x" + (rows * CELL) + ")");

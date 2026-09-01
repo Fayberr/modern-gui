@@ -1,4 +1,4 @@
-"""Generates assets/faybergui/icon.png: the mod icon.
+"""Generates assets/moderngui/icon.png: the mod icon.
 
 The design is the library's own widget catalog, composed on a dark square
 card in a 2x2 arrangement: an ON pill toggle top left, a primary button top
@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw
 S = 8  # supersample factor
 W = 128 * S
 
-# Theme DARK palette (see net.fayber.faybergui.render.Theme).
+# Theme DARK palette (see net.fayber.moderngui.render.Theme).
 CARD = (26, 26, 26, 255)        # #1A1A1A
 BORDER = (58, 58, 58, 255)      # #3A3A3A
 TEXT = (240, 240, 240, 255)     # #F0F0F0
@@ -64,6 +64,6 @@ d.ellipse([knob_cx - knob_r, s_cy - knob_r, knob_cx + knob_r, s_cy + knob_r],
 
 img = img.resize((128, 128), Image.LANCZOS)
 out = sys.argv[1] if len(sys.argv) > 1 else \
-    "src/main/resources/assets/faybergui/icon.png"
+    "src/main/resources/assets/moderngui/icon.png"
 img.save(out, "PNG", optimize=True)
 print("wrote", out)
