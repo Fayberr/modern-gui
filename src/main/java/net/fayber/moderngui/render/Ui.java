@@ -236,9 +236,29 @@ public final class Ui {
         roundRect(gfx, x, y, w, h, Math.min(w, h) / 2.0f, color);
     }
 
-    /** Anti-aliased filled circle. */
+    /**
+     * Anti-aliased filled circle.
+     *
+     * <p>The device box is derived from the already-rounded radius instead of going through
+     * {@link #roundRect}, which rounds the box and the radius independently: a fractional radius
+     * (3.5 GUI at scale 3) there produces an odd 21px box whose radius clamps down a pixel, and
+     * the misfit leaves a 1px slab between the corner quads. On the picker's cursor that slab
+     * read as a hairline tick through the disc, appearing and vanishing with the cursor's
+     * sub-pixel position. With the box cut as exactly 2r the four corner quads tile it edge to
+     * edge with no slabs and no seam, so the disc renders identically everywhere.
+     */
     public static void circle(GuiGraphicsExtractor gfx, float cx, float cy, float radius, int color) {
-        roundRect(gfx, cx - radius, cy - radius, radius * 2.0f, radius * 2.0f, radius, color);
+        float s = scale();
+        int r0 = Math.max(0, Math.round(radius * s));
+        if (r0 == 0) {
+            return;
+        }
+        int x0 = Math.round(cx * s);
+        int y0 = Math.round(cy * s);
+        gfx.pose().pushMatrix();
+        gfx.pose().scale(1.0f / s, 1.0f / s);
+        roundRectDevice(gfx, x0 - r0, y0 - r0, r0 * 2, r0 * 2, r0, color);
+        gfx.pose().popMatrix();
     }
 
     /**
