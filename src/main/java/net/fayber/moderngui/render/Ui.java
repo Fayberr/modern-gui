@@ -208,18 +208,19 @@ public final class Ui {
             // A fully transparent fill cannot be painted over the outer shape to "cut" the
             // interior out (a zero-alpha fill is a blend no-op, so the border would cover the
             // whole rect). Paint the ring directly instead: four edge strips plus the corner
-            // arcs. The corner arc fills its full quadrant, so corner interiors stay border
-            // coloured inside the arc; at hairline thickness that still reads as a ring.
+            // bands. The corners must be BANDS, not the full quarter discs the opaque path
+            // uses: a disc is solid, so on a hairline ring it renders as a fat blob over the
+            // corner (the interior here belongs to whatever the caller drew).
             gfx.pose().pushMatrix();
             gfx.pose().scale(1.0f / s, 1.0f / s);
             gfx.fill(x0 + r0, y0, x0 + w0 - r0, y0 + t, border);
             gfx.fill(x0 + r0, y0 + h0 - t, x0 + w0 - r0, y0 + h0, border);
             gfx.fill(x0, y0 + r0, x0 + t, y0 + h0 - r0, border);
             gfx.fill(x0 + w0 - t, y0 + r0, x0 + w0, y0 + h0 - r0, border);
-            corner(gfx, x0, y0, r0, 0, 0, border);
-            corner(gfx, x0 + w0 - r0, y0, r0, 1, 0, border);
-            corner(gfx, x0, y0 + h0 - r0, r0, 0, 1, border);
-            corner(gfx, x0 + w0 - r0, y0 + h0 - r0, r0, 1, 1, border);
+            cornerRing(gfx, x0, y0, r0, t, 0, 0, border);
+            cornerRing(gfx, x0 + w0 - r0, y0, r0, t, 1, 0, border);
+            cornerRing(gfx, x0, y0 + h0 - r0, r0, t, 0, 1, border);
+            cornerRing(gfx, x0 + w0 - r0, y0 + h0 - r0, r0, t, 1, 1, border);
             gfx.pose().popMatrix();
             return;
         }
@@ -304,6 +305,75 @@ public final class Ui {
             }
             int x0 = uHalf == 0 ? x + r - span : x;
             gfx.fill(x0, y + row, x0 + span, y + row + 1, color);
+        }
+    }
+
+    /**
+     * One corner of a hairline ring: the band between the outer arc (radius r) and the inner
+     * arc (radius r-t), one fill per physical-pixel row. Same fallback geometry as
+     * {@link #cornerFallback}, narrowed to the band, since a full quarter disc would read as a
+     * solid blob on anything thinner than the radius.
+     */
+    private static void cornerRing(GuiGraphicsExtractor gfx, int x, int y, int r, int t,
+                                   int uHalf, int vHalf, int color) {
+        int inner = Math.max(0, r - t);
+        for (int row = 0; row < r; row++) {
+            float dy = (vHalf == 0 ? (r - row - 0.5f) : (row + 0.5f));
+            if (dy >= r) {
+                continue;
+            }
+            // Band extent measured inward from the corner tip edge: the outer arc start and,
+            // when this row reaches the inner circle, where that circle ends the band.
+            int from = r - Math.round((float) Math.sqrt(r * r - dy * dy));
+            int to = r;
+            if (dy < inner) {
+                to = r - Math.round((float) Math.sqrt(inner * (float) inner - dy * dy));
+            }
+            if (to <= from) {
+                continue;
+            }
+            int x0 = uHalf == 0 ? x + from : x + r - to;
+            gfx.fill(x0, y + row, x0 + to - from, y + row + 1, color);
+        }
+    }
+
+    /**
+     * Squares off the corners of a rect the caller drew edge to edge: paints the part of each
+     * corner square that lies OUTSIDE the quarter-circle arc, so a gradient (or any full-bleed
+     * fill) reads as rounded under a hairline {@link #roundRectBorder} ring drawn on top. The
+     * colour must match the surface behind the rect; there is no erasing in this pipeline.
+     */
+    public static void cornerCut(GuiGraphicsExtractor gfx, float x, float y, float w, float h,
+                                 float radius, int color) {
+        float s = scale();
+        int r = Math.round(radius * s);
+        int x0 = Math.round(x * s);
+        int y0 = Math.round(y * s);
+        int w0 = Math.round(w * s);
+        int h0 = Math.round(h * s);
+        r = Math.max(0, Math.min(r, Math.min(w0, h0) / 2));
+        if (r == 0) {
+            return;
+        }
+        gfx.pose().pushMatrix();
+        gfx.pose().scale(1.0f / s, 1.0f / s);
+        cutCorner(gfx, x0, y0, r, 0, 0, color);
+        cutCorner(gfx, x0 + w0 - r, y0, r, 1, 0, color);
+        cutCorner(gfx, x0, y0 + h0 - r, r, 0, 1, color);
+        cutCorner(gfx, x0 + w0 - r, y0 + h0 - r, r, 1, 1, color);
+        gfx.pose().popMatrix();
+    }
+
+    /** One corner of {@link #cornerCut}: the wedge between the corner tip edge and the arc. */
+    private static void cutCorner(GuiGraphicsExtractor gfx, int x, int y, int r, int uHalf, int vHalf, int color) {
+        for (int row = 0; row < r; row++) {
+            float dy = (vHalf == 0 ? (r - row - 0.5f) : (row + 0.5f));
+            int to = r - Math.round((float) Math.sqrt(Math.max(0.0f, r * r - dy * dy)));
+            if (to <= 0) {
+                continue;
+            }
+            int x0 = uHalf == 0 ? x : x + r - to;
+            gfx.fill(x0, y + row, x0 + to, y + row + 1, color);
         }
     }
 }

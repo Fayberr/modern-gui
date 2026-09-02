@@ -340,6 +340,9 @@ public class ColorPickerModal implements ModalLayer {
             int veil = Math.round(255.0f * (py / (float) (h - 1)));
             Ui.rect(gfx, sx, sy + py, w, 1, veil << 24);
         }
+        // The gradient runs edge to edge, so its square tips would poke past the rounded ring.
+        // Cut the wedges off in the card colour the square sits on (nothing above it moved).
+        Ui.cornerCut(gfx, sx, sy, w, h, 4.0f, theme.card);
         // Border only, no fill: the gradient above IS the square's interior. A zero-alpha fill
         // is safe here because Ui.roundRectBorder paints a real ring for that case.
         Ui.roundRectBorder(gfx, sx, sy, w, h, 4.0f, 0, theme.cardBorder, 1.0f);
