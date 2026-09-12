@@ -16,11 +16,11 @@ import org.slf4j.LoggerFactory;
  * with one thing swapped: a fragment shader that computes circular coverage from the UVs and
  * anti-aliases it with {@code fwidth}, so corners are smooth at any GUI scale and any radius.
  *
- * <p>Everything except the fragment shader is copied off {@link RenderPipelines#GUI_TEXTURED} at
- * runtime rather than hard-coded, so blend mode, depth state, vertex format and uniform layout
- * automatically track whatever the current Minecraft version does. Blaze3D compiles pipelines
- * lazily on first use ({@code GlDevice#getOrCompilePipeline}), so no registration is needed; the
- * shader source is loaded from this mod's assets by the normal resource manager.
+ * <p>Everything except the fragment shader comes from {@link RenderPipelines#GUI_TEXTURED_SNIPPET}
+ * at runtime rather than hard-coded, so blend mode, depth state, vertex format and bind group
+ * layout automatically track whatever the current Minecraft version does. Blaze3D compiles
+ * pipelines lazily on first use ({@code GlDevice#getOrCompilePipeline}), so no registration is
+ * needed; the shader source is loaded from this mod's assets by the normal resource manager.
  *
  * <p>Construction is lazy and failure-tolerant: if anything about the vanilla pipeline changes in a
  * way this cannot mirror, {@link #roundCorner()} returns null and {@link Ui} falls back to drawing
@@ -55,34 +55,13 @@ public final class GuiPipelines {
     }
 
     private static RenderPipeline buildRoundCorner() {
-        RenderPipeline base = RenderPipelines.GUI_TEXTURED;
-        RenderPipeline.Builder builder = RenderPipeline.builder()
+        // GUI_TEXTURED_SNIPPET already carries vertex shader, vertex format, bind group layout
+        // (samplers/uniforms), blend/depth state, polygon mode and cull from the vanilla textured
+        // GUI pipeline; passing it to builder() seeds all of that so only the location and the
+        // fragment shader need to be overridden.
+        return RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
                 .withLocation(Identifier.fromNamespaceAndPath(ModernGuiClient.MOD_ID, "pipeline/round_corner"))
-                .withVertexShader(base.getVertexShader())
                 .withFragmentShader(Identifier.fromNamespaceAndPath(ModernGuiClient.MOD_ID, "core/round_corner"))
-                .withVertexFormat(base.getVertexFormat(), base.getVertexFormatMode())
-                .withPolygonMode(base.getPolygonMode())
-                .withCull(base.isCull());
-
-        // These are Optionals on the vanilla pipeline: GUI_TEXTURED leaves them unset, and the
-        // builder setters reject null, so they are only copied when actually present.
-        if (base.getColorTargetState() != null) {
-            builder.withColorTargetState(base.getColorTargetState());
-        }
-        if (base.getDepthStencilState() != null) {
-            builder.withDepthStencilState(base.getDepthStencilState());
-        }
-
-        for (String sampler : base.getSamplers()) {
-            builder.withSampler(sampler);
-        }
-        for (RenderPipeline.UniformDescription uniform : base.getUniforms()) {
-            if (uniform.textureFormat() != null) {
-                builder.withUniform(uniform.name(), uniform.type(), uniform.textureFormat());
-            } else {
-                builder.withUniform(uniform.name(), uniform.type());
-            }
-        }
-        return builder.build();
+                .build();
     }
 }

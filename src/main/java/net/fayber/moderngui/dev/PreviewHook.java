@@ -26,7 +26,7 @@ public final class PreviewHook {
 
             @Override
             public void onEndTick(Minecraft client) {
-                if (this.opened || !(client.screen instanceof TitleScreen)) {
+                if (this.opened || !(client.gui.screen() instanceof TitleScreen)) {
                     return;
                 }
                 if (++this.ticks < 20) {
@@ -34,7 +34,7 @@ public final class PreviewHook {
                 }
                 this.opened = true;
                 ModernGuiClient.LOGGER.info("PREVIEW: opening the widget test screen");
-                client.setScreen(new net.fayber.moderngui.dev.WidgetTestScreen());
+                client.setScreenAndShow(new net.fayber.moderngui.dev.WidgetTestScreen());
             }
         });
     }

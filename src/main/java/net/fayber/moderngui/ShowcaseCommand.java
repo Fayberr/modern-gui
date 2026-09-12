@@ -26,8 +26,8 @@ public final class ShowcaseCommand {
         dispatcher.register(ClientCommands.literal("moderngui")
                 .then(ClientCommands.literal("showcase").executes(context -> {
                     Minecraft client = context.getSource().getClient();
-                    // Route through the client thread: setScreen is only safe there.
-                    client.execute(() -> client.setScreen(new WidgetTestScreen()));
+                    // Route through the client thread: setScreenAndShow is only safe there.
+                    client.execute(() -> client.setScreenAndShow(new WidgetTestScreen()));
                     return Command.SINGLE_SUCCESS;
                 })));
     }
