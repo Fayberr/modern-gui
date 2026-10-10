@@ -34,7 +34,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public final class WidgetTestScreen extends ModernGuiScreen {
     private static int stepperValue = 8;
     private static int dropdownValue = 1;
     private static DemoMode cycleValue = DemoMode.NORMAL;
-    private static int keybindCode = GLFW.GLFW_KEY_R;
+    private static int keybindCode = InputConstants.KEY_R;
     private static int sliderValue = 40;
     private static double numberValue = 2.5;
     private static String searchValue = "";

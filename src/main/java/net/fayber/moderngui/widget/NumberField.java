@@ -3,7 +3,7 @@ package net.fayber.moderngui.widget;
 import net.fayber.moderngui.render.Theme;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -131,7 +131,7 @@ public class NumberField extends TextField {
     @Override
     public boolean keyPressed(KeyEvent event) {
         if (this.isActive() && this.isFocused()) {
-            if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
+            if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
                 this.commit();
                 return true;
             }

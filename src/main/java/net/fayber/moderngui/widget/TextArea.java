@@ -12,7 +12,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -316,23 +316,23 @@ public class TextArea extends AbstractWidget {
             this.scrollToCaret();
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
+        if (event.key() == InputConstants.KEY_BACKSPACE) {
             this.backspace();
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_DELETE) {
+        if (event.key() == InputConstants.KEY_DELETE) {
             this.delete();
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
+        if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
             this.breakLine();
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_HOME) {
+        if (event.key() == InputConstants.KEY_HOME) {
             this.caretCol = 0;
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_END) {
+        if (event.key() == InputConstants.KEY_END) {
             this.caretCol = this.lines.get(this.caretLine).length();
             return true;
         }

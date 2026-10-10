@@ -9,7 +9,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.function.IntConsumer;
 
@@ -195,7 +195,7 @@ public class ColorPickerModal implements ModalLayer {
         this.layout(host.theme);
         double mx = event.x();
         double my = event.y();
-        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             if (this.inRect(mx, my, this.svX(), this.svY(), this.svWidth(), this.svHeight)) {
                 this.dragTarget = DragTarget.SATURATION;
                 this.updateFromPointer(mx, my);
@@ -290,7 +290,7 @@ public class ColorPickerModal implements ModalLayer {
             host.closeModal();
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
+        if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
             host.closeModal();
             return true;
         }

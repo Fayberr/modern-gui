@@ -79,7 +79,7 @@ publishing {
 			// version number under plain "1.0.14". Suffix the LOCAL coordinate only (jar filename
 			// and fabric.mod.json embedded version stay the clean "1.0.14") so both builds can
 			// coexist in ~/.m2 without one silently overwriting the other.
-			version = "${project.version}+26.2"
+			version = "${project.version}+26.3"
 			from components.java
 		}
 	}

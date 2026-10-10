@@ -8,7 +8,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -89,7 +89,7 @@ public class CycleButton<T> extends AbstractButton {
     @Override
     public void onPress(InputWithModifiers input) {
         boolean backward = input instanceof MouseButtonEvent event
-                && event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+                && event.button() == InputConstants.MOUSE_BUTTON_RIGHT;
         T next = this.values[this.nextIndex(backward ? -1 : 1)];
         this.setter.accept(next);
         if (this.onChange != null) {

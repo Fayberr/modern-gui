@@ -9,7 +9,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  *
  * <p>Binding pattern: live-read plus callback. The displayed bind is read through the
  * {@code getter} every frame (so external resets show immediately), and a captured bind is
- * reported through {@code onChange}. The reported code is: GLFW keycodes as-is for keyboard keys,
+ * reported through {@code onChange}. The reported code is: SDL scancodes as-is for keyboard keys,
  * and {@code 1000 + button} for mouse buttons, so a single int carries both and
  * {@code code >= MOUSE_CODE_BASE} always means a mouse bind. {@link #keyName(int)} resolves either
  * kind to a display name and is public so other widgets (tooltips, conflict lists) can reuse it.
@@ -66,7 +66,7 @@ public class KeybindField extends AbstractButton {
     }
 
     /**
-     * Resolves a bind code (a GLFW keycode, or {@code MOUSE_CODE_BASE + button} for mouse binds)
+     * Resolves a bind code (an SDL scancode, or {@code MOUSE_CODE_BASE + button} for mouse binds)
      * to a human-readable name such as {@code "A"}, {@code "F5"}, {@code "L Shift"} or
      * {@code "Mouse Left"}. Negative codes are the unbound sentinel and resolve to
      * {@code "Not bound"} (what vanilla and Cloth show). Public so other widgets can render key
@@ -79,72 +79,72 @@ public class KeybindField extends AbstractButton {
         if (code >= MOUSE_CODE_BASE) {
             return mouseName(code - MOUSE_CODE_BASE);
         }
-        if (code == GLFW.GLFW_KEY_ESCAPE) {
+        if (code == InputConstants.KEY_ESCAPE) {
             return "Esc";
         }
-        if (code == GLFW.GLFW_KEY_SPACE) {
+        if (code == InputConstants.KEY_SPACE) {
             return "Space";
         }
-        if (code == GLFW.GLFW_KEY_TAB) {
+        if (code == InputConstants.KEY_TAB) {
             return "Tab";
         }
-        if (code == GLFW.GLFW_KEY_ENTER) {
+        if (code == InputConstants.KEY_RETURN) {
             return "Enter";
         }
-        if (code == GLFW.GLFW_KEY_BACKSPACE) {
+        if (code == InputConstants.KEY_BACKSPACE) {
             return "Backspace";
         }
-        if (code == GLFW.GLFW_KEY_DELETE) {
+        if (code == InputConstants.KEY_DELETE) {
             return "Delete";
         }
-        if (code == GLFW.GLFW_KEY_HOME) {
+        if (code == InputConstants.KEY_HOME) {
             return "Home";
         }
-        if (code == GLFW.GLFW_KEY_END) {
+        if (code == InputConstants.KEY_END) {
             return "End";
         }
-        if (code == GLFW.GLFW_KEY_PAGE_UP) {
+        if (code == InputConstants.KEY_PAGEUP) {
             return "Page Up";
         }
-        if (code == GLFW.GLFW_KEY_PAGE_DOWN) {
+        if (code == InputConstants.KEY_PAGEDOWN) {
             return "Page Down";
         }
-        if (code == GLFW.GLFW_KEY_UP) {
+        if (code == InputConstants.KEY_UP) {
             return "Up";
         }
-        if (code == GLFW.GLFW_KEY_DOWN) {
+        if (code == InputConstants.KEY_DOWN) {
             return "Down";
         }
-        if (code == GLFW.GLFW_KEY_LEFT) {
+        if (code == InputConstants.KEY_LEFT) {
             return "Left";
         }
-        if (code == GLFW.GLFW_KEY_RIGHT) {
+        if (code == InputConstants.KEY_RIGHT) {
             return "Right";
         }
-        if (code == GLFW.GLFW_KEY_LEFT_SHIFT) {
+        if (code == InputConstants.KEY_LSHIFT) {
             return "L Shift";
         }
-        if (code == GLFW.GLFW_KEY_RIGHT_SHIFT) {
+        if (code == InputConstants.KEY_RSHIFT) {
             return "R Shift";
         }
-        if (code == GLFW.GLFW_KEY_LEFT_CONTROL) {
+        if (code == InputConstants.KEY_LCONTROL) {
             return "L Ctrl";
         }
-        if (code == GLFW.GLFW_KEY_RIGHT_CONTROL) {
+        if (code == InputConstants.KEY_RCONTROL) {
             return "R Ctrl";
         }
-        if (code == GLFW.GLFW_KEY_LEFT_ALT) {
+        if (code == InputConstants.KEY_LALT) {
             return "L Alt";
         }
-        if (code == GLFW.GLFW_KEY_RIGHT_ALT) {
+        if (code == InputConstants.KEY_RALT) {
             return "R Alt";
         }
-        if (code >= GLFW.GLFW_KEY_F1 && code <= GLFW.GLFW_KEY_F12) {
-            return "F" + (code - GLFW.GLFW_KEY_F1 + 1);
+        if (code >= InputConstants.KEY_F1 && code <= InputConstants.KEY_F12) {
+            return "F" + (code - InputConstants.KEY_F1 + 1);
         }
-        String name = GLFW.glfwGetKeyName(code, 0);
-        if (name != null) {
-            // GLFW reports lowercase letters even for shifted keys; display them uppercase.
+        String name = InputConstants.Type.KEYBOARD.getOrCreate(code).getDisplayName().getString();
+        if (name != null && !name.isEmpty()) {
+            // Single-character key names are shown uppercase.
             return name.length() == 1 ? name.toUpperCase() : name;
         }
         return "Key " + code;
@@ -153,10 +153,10 @@ public class KeybindField extends AbstractButton {
     /** Display name for a mouse button index (0-based). */
     private static String mouseName(int button) {
         return switch (button) {
-            case 0 -> "Mouse Left";
-            case 1 -> "Mouse Right";
-            case 2 -> "Mouse Middle";
-            default -> "Mouse " + (button + 1);
+            case InputConstants.MOUSE_BUTTON_LEFT -> "Mouse Left";
+            case InputConstants.MOUSE_BUTTON_RIGHT -> "Mouse Right";
+            case InputConstants.MOUSE_BUTTON_MIDDLE -> "Mouse Middle";
+            default -> "Mouse " + button;
         };
     }
 

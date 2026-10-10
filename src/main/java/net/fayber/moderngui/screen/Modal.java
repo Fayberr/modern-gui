@@ -4,7 +4,7 @@ import net.fayber.moderngui.render.Theme;
 import net.fayber.moderngui.render.Ui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +123,7 @@ public class Modal implements ModalLayer {
             }
             return true;
         }
-        if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
+        if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
             Button primary = this.buttons.get(this.buttons.size() - 1);
             host.closeModal();
             if (primary.action != null) {

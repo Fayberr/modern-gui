@@ -5,7 +5,7 @@ import net.fayber.moderngui.render.Ui;
 import net.fayber.moderngui.widget.Icons;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.List;
 
