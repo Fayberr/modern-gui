@@ -1,5 +1,6 @@
 package net.fayber.moderngui.list;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fayber.moderngui.render.Theme;
 import net.fayber.moderngui.render.Ui;
 import net.minecraft.client.Minecraft;
@@ -141,7 +142,7 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
 
     @Override
     public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
-        if (this.scrollable() && event.button() == 0 && this.overScrollbar(event.x(), event.y())) {
+        if (this.scrollable() && event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.overScrollbar(event.x(), event.y())) {
             this.draggingScrollbar = true;
             // Grab-and-centre: the thumb jumps to the pointer, like a website scrollbar.
             this.setScrollAmount(this.scrollForPointerY(event.y()));
