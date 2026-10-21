@@ -141,7 +141,7 @@ public class GenIcons {
         return parse(element);
     }
 
-    // ------------------------------------------------------------------ path parser
+    // path parser
 
     static final Pattern TOKEN = Pattern.compile(
             "[MmLlHhVvCcSsQqTtAaZz]|[-+]?(?:\\d*\\.\\d+|\\d+\\.?)(?:[eE][-+]?\\d+)?");

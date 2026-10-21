@@ -110,9 +110,8 @@ public abstract class CardList extends ContainerObjectSelectionList<CardList.Row
     }
 
     /**
-     * GUI pixels per wheel notch. Vanilla's own rate is {@code entryHeight / 2} (bytecode-verified:
-     * the list constructor passes that to the scrollbar settings), half a row, which reads as
-     * sluggish on a sparse screen. Two rows per notch feels like a modern app.
+     * Scroll two rows per wheel notch. Vanilla uses half a row, which makes sparse lists
+     * slow to navigate.
      */
     @Override
     protected double scrollRate() {

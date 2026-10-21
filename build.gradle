@@ -75,10 +75,8 @@ publishing {
 		create('mavenJava', MavenPublication) {
 			// Publish under modern-gui (the archivesBaseName), not the project name.
 			artifactId = project.archives_base_name
-			// mavenLocal has no MC-version axis: the 26.1.x folder already publishes this same
-			// version number under plain "1.0.14". Suffix the LOCAL coordinate only (jar filename
-			// and fabric.mod.json embedded version stay the clean "1.0.14") so both builds can
-			// coexist in ~/.m2 without one silently overwriting the other.
+			// Include the Minecraft version in Maven coordinates so game versions can coexist.
+			// The jar filename and Fabric mod version keep the plain version number.
 			version = "${project.version}+26.3"
 			from components.java
 		}
