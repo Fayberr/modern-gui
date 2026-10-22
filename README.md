@@ -1,5 +1,7 @@
 # Modern GUI
 
+> Work in progress: this library is still in development. Expect API changes and unfinished widgets.
+
 A client-side widget library for Fabric mods on Minecraft 26.2. Includes rounded panels,
 buttons, scrolling lists, popups and Inter text rendering. Requires Java 25 and Fabric API.
 
