@@ -11,18 +11,19 @@ Voice: short, concrete, no config-key dumps, no "and more". No em-dashes.
 
 ## description (short summary line)
 
-A widget library for Minecraft mods: dark rounded cards, anti-aliased shapes and a bundled Inter font.
+A widget library for Minecraft mods: dark rounded cards, anti-aliased shapes and a bundled Inter font that mods can swap for any other.
 
 ## body (full page)
 
 # Modern GUI
 
-A widget library that gives Minecraft mods one shared look: dark rounded cards, shapes drawn at physical pixel resolution, and a bundled Inter font. Players usually meet it as a dependency of mods that use it. On its own it adds one command, `/moderngui`, which opens a showcase screen with every widget in the catalog.
+A widget library that gives Minecraft mods one shared look: dark rounded cards, shapes drawn at physical pixel resolution, and a bundled Inter font that mods can swap for any other. Players usually meet it as a dependency of mods that use it. On its own it adds one command, `/moderngui`, which opens a showcase screen with every widget in the catalog.
 
 ## Rendering
 
 - Rounded rectangles, pills, circles and shadows are anti-aliased at physical pixel resolution, so edges stay crisp at every GUI scale.
-- Inter is bundled per GUI scale, with a bold variant for labels and active states.
+- Text is rasterised at the real physical pixel size for every GUI scale and text size (0.75x to 2x), not magnified, so it stays sharp. Inter and Inter Display are bundled; mods can register any TTF family, and players can drop TTF files into `config/moderngui/fonts`.
+- Item icons at any size render as sharp 3D models, optionally rotated or cropped to a rounded tile.
 - A single Theme palette drives every widget; hover states are derived from it.
 
 ## Widgets
@@ -31,6 +32,7 @@ A widget library that gives Minecraft mods one shared look: dark rounded cards, 
 - Dropdowns, text and number fields, search fields, multi-line text areas and keybind capture fields.
 - Tabs, cards, scrolling lists with momentum wheel and slim scrollbars, horizontal scroll panels.
 - Modal dialogs, popups and toasts.
+- Motion: smooth scrolling views, eased toggles with a sliding knob, an icon cycler and slide transitions between pages.
 
 ## For mod developers
 

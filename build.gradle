@@ -21,6 +21,14 @@ dependencies {
 
 	// Fabric API.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Unit tests for the pure logic (easing, scroll physics, font arithmetic and generation).
+	testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.4"
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
 }
 
 // Dev-only design workbench: `./gradlew runClient -PmgPreview=true` boots the client at a fixed
@@ -32,6 +40,19 @@ loom {
 			programArgs '--width', '1280', '--height', '720'
 			if (project.hasProperty('mgPreview')) {
 				vmArg '-Dmoderngui.preview=true'
+			}
+			if (project.hasProperty('mgPreviewShot')) {
+				// Saves a PNG of the showcase after a few seconds and quits (dev screenshots).
+				vmArg "-Dmoderngui.previewShot=${project.property('mgPreviewShot')}"
+			}
+			if (project.hasProperty('mgPreviewWorld')) {
+				vmArg '-Dmoderngui.previewWorld=true'
+			}
+			if (project.hasProperty('mgPreviewTab')) {
+				vmArg "-Dmoderngui.previewTab=${project.property('mgPreviewTab')}"
+			}
+			if (project.hasProperty('mgPreviewFont')) {
+				vmArg "-Dmoderngui.previewFont=${project.property('mgPreviewFont')}"
 			}
 			if (project.hasProperty('mgPreviewScroll')) {
 				vmArg "-Dmoderngui.previewScroll=${project.property('mgPreviewScroll')}"

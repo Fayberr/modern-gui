@@ -1,5 +1,14 @@
 package net.fayber.moderngui.dev;
 
+import net.fayber.moderngui.ModernGui;
+import net.fayber.moderngui.anim.Easing;
+import net.fayber.moderngui.anim.SlideSwitcher;
+import net.fayber.moderngui.anim.SlideTransition;
+import net.fayber.moderngui.font.FontFamilies;
+import net.fayber.moderngui.font.FontFamily;
+import net.fayber.moderngui.render.ItemIcon;
+import net.fayber.moderngui.render.SizedText;
+import net.fayber.moderngui.render.Theme;
 import net.fayber.moderngui.render.Ui;
 import net.fayber.moderngui.screen.ModernGuiScreen;
 import net.fayber.moderngui.screen.Modal;
@@ -14,6 +23,7 @@ import net.fayber.moderngui.widget.FlatButton;
 import net.fayber.moderngui.widget.HorizontalScrollPanel;
 import net.fayber.moderngui.widget.HFlow;
 import net.fayber.moderngui.widget.IconButton;
+import net.fayber.moderngui.widget.IconCycler;
 import net.fayber.moderngui.widget.Icons;
 import net.fayber.moderngui.widget.IntSlider;
 import net.fayber.moderngui.widget.KeybindField;
@@ -23,6 +33,7 @@ import net.fayber.moderngui.widget.NumberField;
 import net.fayber.moderngui.widget.PillToggle;
 import net.fayber.moderngui.widget.ProgressBar;
 import net.fayber.moderngui.widget.RadioGroup;
+import net.fayber.moderngui.widget.ScrollView;
 import net.fayber.moderngui.widget.SearchField;
 import net.fayber.moderngui.widget.SegmentedControl;
 import net.fayber.moderngui.widget.Spinner;
@@ -34,6 +45,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -45,17 +58,19 @@ import java.util.List;
  * {@code -Dmoderngui.preview=true} workbench hook, and all of its backing state lives here as
  * statics (so switching tabs, which re-runs {@link #initScreen}, keeps every value).
  *
- * <p>The catalog does not fit on one 720p screen, so the tabs at the top switch between three
- * pages: buttons and selectors, text input, and containers plus status indicators. On small
+ * <p>The catalog does not fit on one 720p screen, so the tabs at the top switch between four
+ * pages: buttons and selectors, text input, containers plus status indicators, and the motion and
+ * rendering page (sized text, sharp item icons, icon cycler, smooth scroll, slide transition). On small
  * windows the tail of a page clips rather than scrolls; that is fine for a workbench screen.
  */
 public final class WidgetTestScreen extends ModernGuiScreen {
     private static final int TAB_BUTTONS = 0;
     private static final int TAB_INPUTS = 1;
     private static final int TAB_LAYOUT = 2;
+    private static final int TAB_MOTION = 3;
 
     // Shared demo state; statics survive tab switches (the screen rebuilds).
-    private static int tab = TAB_BUTTONS;
+    private static int tab = Integer.getInteger("moderngui.previewTab", TAB_BUTTONS);
     private static boolean pillState = true;
     private static boolean checkboxState = false;
     private static int radioIndex = 1;
@@ -67,6 +82,18 @@ public final class WidgetTestScreen extends ModernGuiScreen {
     private static int sliderValue = 40;
     private static double numberValue = 2.5;
     private static String searchValue = "";
+    private static int slidePage = 0;
+
+    static {
+        // Dev screenshots: -PmgPreviewFont=inter_display starts on that family.
+        String preview = System.getProperty("moderngui.previewFont");
+        if (preview != null) {
+            FontFamilies.all().stream().filter(f -> f.id().getPath().equals(preview)).findFirst()
+                    .ifPresent(ModernGui::setDefaultFont);
+        }
+    }
+    private static final SlideSwitcher<Integer> SLIDE_PAGES = new SlideSwitcher<>(0,
+            new SlideTransition().duration(320L).easing(Easing.EASE_OUT_QUART));
 
     /** Demo values for the cycle button. */
     private enum DemoMode {
@@ -86,7 +113,8 @@ public final class WidgetTestScreen extends ModernGuiScreen {
         int x = this.contentX();
 
         this.addRenderableWidget(new Tabs(x, 30, List.of(Component.literal("Buttons"),
-                        Component.literal("Inputs"), Component.literal("Layout")),
+                        Component.literal("Inputs"), Component.literal("Layout"),
+                        Component.literal("Motion")),
                 () -> tab, index -> {
                     tab = index;
                     this.rebuildWidgets();
@@ -95,6 +123,7 @@ public final class WidgetTestScreen extends ModernGuiScreen {
         switch (tab) {
             case TAB_BUTTONS -> this.buildButtonsPage(x);
             case TAB_INPUTS -> this.buildInputsPage(x);
+            case TAB_MOTION -> this.buildMotionPage(x);
             default -> this.buildLayoutPage(x);
         }
     }
@@ -246,6 +275,88 @@ public final class WidgetTestScreen extends ModernGuiScreen {
         this.addRenderableWidget(panel);
     }
 
+
+    /**
+     * Sized text, sharp item icons, the icon cycler, the eased toggle, smooth scroll and the slide
+     * transition. Each block sits next to its "before" where there is one, so a regression in
+     * crispness is visible at a glance at any GUI scale.
+     */
+    private void buildMotionPage(int x) {
+        int y = 68;
+
+        // Font switcher: every registered family (the bundled two plus any user fonts). The
+        // screen rebuilds because Ui.ui(...) bakes the font into each component it creates.
+        List<FontFamily> families = new ArrayList<>(FontFamilies.all());
+        List<String> names = families.stream().map(f -> f.id().getPath().replace("user/", "").replace('_', ' ')).toList();
+        this.addRenderableWidget(new SegmentedControl(x, y, names, () -> Math.max(0, families.indexOf(ModernGui.defaultFont())),
+                i -> {
+                    ModernGui.setDefaultFont(families.get(i));
+                    this.rebuildWidgets();
+                }));
+        y += 30;
+
+        this.addRenderableWidget(new TypeDemo(x, y, 180, 88, this.theme));
+        this.addRenderableWidget(new ItemDemo(x + 190, y, 190, 70, this.theme));
+
+        y += 92;
+        // Tile backdrop = card colour so the corner cut blends in.
+        List<ItemStack> stacks = List.of(stack(Items.CARVED_PUMPKIN), stack(Items.MELON),
+                stack(Items.GRASS_BLOCK), stack(Items.DIAMOND));
+        this.addRenderableWidget(new CardBackdrop(x, y, 52, 52, this.theme));
+        this.addRenderableWidget(IconCycler.items(x + 2, y + 2, 48, stacks)
+                .interval(1800L).duration(420L).roundedTile(6.0f, this.theme.card));
+        this.addRenderableWidget(new CardBackdrop(x + 62, y, 52, 52, this.theme));
+        this.addRenderableWidget(IconCycler.items(x + 64, y + 2, 48, stacks)
+                .interval(1200L).duration(380L).easing(Easing.EASE_IN_OUT_CUBIC)
+                .direction(SlideTransition.Direction.UP).runOnlyWhenHovered());
+        Label cyclerLabel = new Label(x + 124, y + 6, "Icon cycler: always on, then hover to run");
+        cyclerLabel.style(Label.Style.MUTED);
+        this.addRenderableWidget(cyclerLabel);
+        this.addRenderableWidget(new PillToggle(x + 124, y + 30, PillToggle.Size.LARGE,
+                () -> pillState, v -> pillState = v).animation(300L, Easing.EASE_OUT_BACK));
+        Label toggleLabel = new Label(x + 176, y + 33, "Springy knob");
+        toggleLabel.style(Label.Style.MUTED);
+        this.addRenderableWidget(toggleLabel);
+
+        y += 58;
+        List<String> rows = new ArrayList<>();
+        for (int i = 1; i <= 40; i++) {
+            rows.add("Scroll row " + i);
+        }
+        Theme t = this.theme;
+        this.addRenderableWidget(new ScrollView(x, y, 180, 96, rows.size() * 24, (gfx, px, py, pw, mx, my) -> {
+            for (int i = 0; i < rows.size(); i++) {
+                int ry = py + i * 24;
+                boolean hovered = mx >= px && mx < px + pw && my >= ry && my < ry + 20;
+                Ui.roundRectBorder(gfx, px, ry, pw, 20, 5.0f, hovered ? t.cardHover : t.card,
+                        hovered ? t.cardBorderHover : t.cardBorder, 1.0f);
+                Ui.text(gfx, Ui.ui(rows.get(i)), px + 8, ry + 6, t.text);
+            }
+        }));
+
+        int sx = x + 190;
+        this.addRenderableWidget(new SegmentedControl(sx, y, List.of("One", "Two", "Three"),
+                () -> slidePage, v -> {
+                    SLIDE_PAGES.show(v, v > slidePage
+                            ? SlideTransition.Direction.LEFT : SlideTransition.Direction.RIGHT);
+                    slidePage = v;
+                }));
+        this.addRenderableWidget(new SlideDemo(sx, y + 32, 190, 64, this.theme));
+    }
+
+    /**
+     * A stack of {@code item}, or empty when item components are not bound yet. Vanilla binds them
+     * when the first world loads, so on the title screen (before any world) building a stack
+     * throws; the icons then simply draw nothing, join a world to see them.
+     */
+    private static ItemStack stack(net.minecraft.world.item.Item item) {
+        try {
+            return new ItemStack(item);
+        } catch (NullPointerException e) {
+            return ItemStack.EMPTY;
+        }
+    }
+
     /** Lays a row of widgets out left to right, then adds them all to the screen. */
     private void place(List<AbstractWidget> widgets, int x, int y) {
         Layouts.row(widgets, x, y, 10);
@@ -263,5 +374,129 @@ public final class WidgetTestScreen extends ModernGuiScreen {
     @Override
     protected void drawTitle(GuiGraphicsExtractor gfx) {
         Ui.text(gfx, Ui.uiBold(this.title), this.contentX(), 18, this.theme.text);
+    }
+
+    /** Sized-text samples, plus the magnified-glyph approach they replace. */
+    private static final class TypeDemo extends AbstractWidget {
+        private static final float[] SIZES = {0.75f, 1.0f, 1.25f, 1.5f, 2.0f};
+        private final Theme theme;
+
+        TypeDemo(int x, int y, int width, int height, Theme theme) {
+            super(x, y, width, height, Component.empty());
+            this.theme = theme;
+            this.active = false;
+        }
+
+        @Override
+        protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float a) {
+            int y = this.getY();
+            for (float size : SIZES) {
+                SizedText.draw(gfx, Component.literal(size + "x Sized text"), this.getX(), y, size,
+                        size >= 1.5f, this.theme.text);
+                y += SizedText.lineHeight(size) + 2;
+            }
+            // The old way: a 1x glyph bitmap magnified by the matrix stack (soft, pixelated).
+            gfx.pose().pushMatrix();
+            gfx.pose().translate(this.getX(), y);
+            gfx.pose().scale(1.5f, 1.5f);
+            Ui.text(gfx, Ui.uiBold("1.5x via scale()"), 0, 0, this.theme.textMuted);
+            gfx.pose().popMatrix();
+        }
+
+        @Override
+        protected void updateWidgetNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {
+        }
+    }
+
+    /** Item icons: vanilla magnified vs sharp, a rotated one, and one cropped to a rounded tile. */
+    private static final class ItemDemo extends AbstractWidget {
+        private final Theme theme;
+        private final ItemStack pumpkin = stack(Items.CARVED_PUMPKIN);
+        private final ItemStack melon = stack(Items.MELON);
+
+        ItemDemo(int x, int y, int width, int height, Theme theme) {
+            super(x, y, width, height, Component.empty());
+            this.theme = theme;
+            this.active = false;
+        }
+
+        @Override
+        protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float a) {
+            int x = this.getX();
+            int y = this.getY();
+            // 1: vanilla item magnified 2.2x, like the old Solaria card icon.
+            gfx.pose().pushMatrix();
+            gfx.pose().translate(x, y);
+            gfx.pose().scale(2.2f, 2.2f);
+            gfx.item(this.pumpkin, 0, 0);
+            gfx.pose().popMatrix();
+            // 2: the same item rendered at its real size.
+            ItemIcon.of(this.pumpkin).size(35).draw(gfx, x + 46, y);
+            // 3: rotated for a nicer angle.
+            ItemIcon.of(this.melon).size(35).rotation(-24, 12, 0).draw(gfx, x + 92, y);
+            // 4: oversized and cropped to a rounded tile.
+            Ui.roundRectBorder(gfx, x + 138, y, 48, 48, 8.0f, this.theme.card, this.theme.cardBorder, 1.0f);
+            ItemIcon.of(this.pumpkin).size(72).offset(6, 6)
+                    .drawInTile(gfx, x + 139, y + 1, 46, 46, 7.0f, this.theme.card);
+
+            int ly = y + 54;
+            SizedText.draw(gfx, Component.literal("scale()"), x, ly, 0.75f, false, this.theme.textMuted);
+            SizedText.draw(gfx, Component.literal("sharp"), x + 46, ly, 0.75f, false, this.theme.textMuted);
+            SizedText.draw(gfx, Component.literal("rotated"), x + 92, ly, 0.75f, false, this.theme.textMuted);
+            SizedText.draw(gfx, Component.literal("tile crop"), x + 138, ly, 0.75f, false, this.theme.textMuted);
+        }
+
+        @Override
+        protected void updateWidgetNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {
+        }
+    }
+
+    /** A card plate to sit behind a transparent widget. */
+    private static final class CardBackdrop extends AbstractWidget {
+        private final Theme theme;
+
+        CardBackdrop(int x, int y, int width, int height, Theme theme) {
+            super(x, y, width, height, Component.empty());
+            this.theme = theme;
+            this.active = false;
+        }
+
+        @Override
+        protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float a) {
+            Ui.roundRectBorder(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 8.0f,
+                    this.theme.card, this.theme.cardBorder, 1.0f);
+        }
+
+        @Override
+        protected void updateWidgetNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {
+        }
+    }
+
+    /** The slide transition between three pages inside a fixed card, driven by the segmented control. */
+    private static final class SlideDemo extends AbstractWidget {
+        private static final String[] BODY = {"First page", "Second page", "Third page"};
+        private final Theme theme;
+
+        SlideDemo(int x, int y, int width, int height, Theme theme) {
+            super(x, y, width, height, Component.empty());
+            this.theme = theme;
+            this.active = false;
+        }
+
+        @Override
+        protected void extractWidgetRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float a) {
+            SLIDE_PAGES.draw(gfx, this.getX(), this.getY(), this.getWidth(), this.getHeight(),
+                    (g, page, px, py, pw, ph) -> {
+                        Ui.roundRectBorder(g, px, py, pw, ph, 8.0f, this.theme.card, this.theme.cardBorder, 1.0f);
+                        SizedText.draw(g, Component.literal(BODY[page]), px + 12, py + 10, 1.5f, true,
+                                this.theme.text);
+                        SizedText.draw(g, Component.literal("Only this card moves."), px + 12, py + 38, 1.0f,
+                                false, this.theme.textSecondary);
+                    });
+        }
+
+        @Override
+        protected void updateWidgetNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {
+        }
     }
 }

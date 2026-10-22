@@ -1,14 +1,14 @@
 package net.fayber.moderngui.render;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.fayber.moderngui.ModernGuiClient;
+import net.fayber.moderngui.ModernGui;
+import net.fayber.moderngui.font.FontFamily;
+import net.fayber.moderngui.font.FontWeight;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,62 +28,61 @@ import java.util.List;
  *       shader computes circular coverage and anti-aliases it per pixel.
  * </ol>
  *
- * <p>Text uses the bundled Inter font via {@link #ui}/{@link #uiBold} rather than the vanilla
- * bitmap font, at a rasterisation that matches the monitor exactly (see {@link #style}).
+ * <p>Text uses the default font family (the bundled Inter unless the consumer picked another with
+ * {@link ModernGui#setDefaultFont}) via {@link #ui}/{@link #uiBold} rather than the vanilla bitmap
+ * font, at a rasterisation that matches the monitor exactly (see {@link FontFamily}).
  */
 public final class Ui {
-    /**
-     * The font is bundled once per GUI scale. Minecraft rasterises a TTF glyph at
-     * {@code size * oversample} texels and then draws it {@code size} GUI pixels tall, so on screen
-     * one texel covers {@code oversample / guiScale} pixels, and the glyph atlas is sampled
-     * NEAREST ({@code FontTexture} uses {@code SamplerCache.getRepeat(FilterMode.NEAREST)}).
-     *
-     * <p>Any ratio other than 1 therefore resamples the glyph with no filtering, which is what makes
-     * TTF text in Minecraft look subtly jagged: a single fixed {@code oversample} is only ever right
-     * at one GUI scale. Picking the variant whose oversample equals the current GUI scale makes it
-     * exactly one texel per physical pixel, and it also makes every glyph advance and bearing
-     * (which Minecraft stores as {@code raster / oversample}) land on a whole physical pixel.
-     */
-    private static final int MAX_SCALE = 6;
-
-    private static final Style[] STYLES = new Style[MAX_SCALE + 1];
-    private static final Style[] STYLES_BOLD = new Style[MAX_SCALE + 1];
-
-    static {
-        for (int i = 1; i <= MAX_SCALE; i++) {
-            // 26.1 selects fonts through FontDescription, not a bare Identifier.
-            STYLES[i] = Style.EMPTY.withFont(new FontDescription.Resource(
-                    Identifier.fromNamespaceAndPath(ModernGuiClient.MOD_ID, "ui_x" + i)));
-            STYLES_BOLD[i] = Style.EMPTY.withFont(new FontDescription.Resource(
-                    Identifier.fromNamespaceAndPath(ModernGuiClient.MOD_ID, "ui_bold_x" + i)));
-        }
-    }
-
     private Ui() {
     }
 
-    /** The Inter style whose rasterisation matches the current GUI scale one texel per pixel. */
+    /**
+     * The style of the default font family ({@link ModernGui#defaultFont}) at normal size, whose
+     * rasterisation matches the current GUI scale one texel per physical pixel.
+     */
     private static Style style(boolean bold) {
-        int i = Math.clamp(Math.round(scale()), 1, MAX_SCALE);
-        return bold ? STYLES_BOLD[i] : STYLES[i];
+        return style(bold, 1.0f);
     }
 
-    /** Wraps text in the Inter UI font. */
+    /** Same at a size factor (1.0 = normal; snaps to a size the family generates). */
+    static Style style(boolean bold, float sizeFactor) {
+        return style(ModernGui.defaultFont(), bold ? FontWeight.BOLD : FontWeight.REGULAR, sizeFactor);
+    }
+
+    /**
+     * The style that selects {@code family}'s font for a weight and size factor at the current GUI
+     * scale. A family whose fonts could not be generated yields the vanilla font.
+     */
+    public static Style style(FontFamily family, FontWeight weight, float sizeFactor) {
+        return family.style(weight, sizeFactor, scale());
+    }
+
+    /** Wraps text in {@code family}'s font at a weight, instead of the default family. */
+    public static Component styled(String text, FontFamily family, FontWeight weight) {
+        return Component.literal(text).setStyle(style(family, weight, 1.0f));
+    }
+
+    /** Re-styles a component into {@code family}'s font at a weight. */
+    public static Component styled(Component text, FontFamily family, FontWeight weight) {
+        return text.copy().setStyle(text.getStyle().withFont(style(family, weight, 1.0f).getFont()));
+    }
+
+    /** Wraps text in the default UI font (Inter unless the consumer changed it). */
     public static Component ui(String text) {
         return Component.literal(text).setStyle(style(false));
     }
 
-    /** Wraps text in the Inter UI font, semibold. */
+    /** Wraps text in the default UI font, bold weight (Inter's is semibold). */
     public static Component uiBold(String text) {
         return Component.literal(text).setStyle(style(true));
     }
 
-    /** Re-styles an arbitrary component (and its children) into the Inter UI font. */
+    /** Re-styles an arbitrary component (and its children) into the default UI font. */
     public static Component ui(Component text) {
         return text.copy().setStyle(text.getStyle().withFont(style(false).getFont()));
     }
 
-    /** Re-styles an arbitrary component into the semibold Inter UI font. */
+    /** Re-styles an arbitrary component into the default UI font, bold weight. */
     public static Component uiBold(Component text) {
         return text.copy().setStyle(text.getStyle().withFont(style(true).getFont()));
     }

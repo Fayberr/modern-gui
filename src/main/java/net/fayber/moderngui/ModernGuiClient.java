@@ -18,6 +18,15 @@ public class ModernGuiClient implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("Modern GUI initialized");
 
+        // Registers the bundled families (Inter, Inter Display) on first touch, then any fonts the
+        // player dropped into config/moderngui/fonts. Before anything else: the generated font pack
+        // must be registered while the resource packs are still being discovered.
+        net.fayber.moderngui.font.FontFamilies.loadUserFonts();
+
+        // Sharp item icons at any size (net.fayber.moderngui.render.ItemIcon). Must happen during
+        // client init: the game renderer snapshots the picture-in-picture renderers when it is built.
+        net.fayber.moderngui.render.ItemIconRenderer.register();
+
         // /moderngui showcase: open the widget catalog in-game (no startup flag needed).
         ShowcaseCommand.register();
 
