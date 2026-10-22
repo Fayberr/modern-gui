@@ -27,19 +27,13 @@ import java.util.function.Supplier;
  * {@code max} limit render darkened and do nothing.
  */
 public class Stepper extends AbstractButton {
-    /** Widget height. */
     public static final int HEIGHT = 24;
-    /** Width of the widget (two 24px buttons around a 44px value slot). */
+    /** Two 24px buttons around a 44px value slot. */
     public static final int WIDTH = 92;
-    /** Side of the square minus/plus buttons. */
     private static final int BUTTON = 24;
-    /** Corner radius of the buttons. */
     private static final float RADIUS = 4.0f;
-    /** Size of the minus/plus glyphs. */
     private static final float GLYPH_SIZE = 10.0f;
-    /** Hold time before repeating starts. */
     private static final long HOLD_DELAY_MS = 400;
-    /** Repeat interval once holding. */
     private static final long REPEAT_MS = 80;
 
     private final Supplier<Integer> getter;
@@ -53,11 +47,10 @@ public class Stepper extends AbstractButton {
     private int buttonOverride = -1;
     private int buttonHoverOverride = -1;
 
-    /** Side currently held down: -1 minus, 0 none, 1 plus. */
+    /** -1 minus, 0 none, 1 plus. */
     private int holding;
     /** When the held button went down, for the initial repeat delay. */
     private long holdStartMs;
-    /** When the last held repeat fired. */
     private long lastRepeatMs;
 
     public Stepper(int x, int y, Supplier<Integer> getter, IntConsumer setter, int min, int max, int step) {
