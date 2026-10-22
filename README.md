@@ -1,5 +1,7 @@
 # Modern GUI
 
+> Work in progress: this library is still in development. Expect API changes and unfinished widgets.
+
 A catalogue of generic, configurable GUI building blocks for Fabric mods (Minecraft 26.1.x,
 Java 25): dark rounded cards, anti-aliased shapes drawn at physical pixel resolution, crisp text in
 any font and a set of widgets. Vanilla and Fabric API only, zero mixins. LGPL-3.0-or-later.
