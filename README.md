@@ -1,5 +1,7 @@
 # Modern GUI
 
+> Work in progress: this library is still in development. Expect API changes and unfinished widgets.
+
 A client-side UI library for Fabric mods on Minecraft 26.3. It provides buttons,
 rounded panels, scrolling card lists, popups and text rendering with the Inter font.
 
