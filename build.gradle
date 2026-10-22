@@ -62,6 +62,7 @@ java {
 }
 
 jar {
+	from('NOTICE', 'LICENSE-GPL', 'INTER-OFL.txt')
 	from('LICENSE') {
 		rename { "${it}_${project.base.archivesName.get()}" }
 	}
