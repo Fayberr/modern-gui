@@ -33,17 +33,11 @@ import java.util.function.Supplier;
  * the row reads as "on" at a glance. Configurable through {@link #theme} and colour overrides.
  */
 public class Checkbox extends AbstractButton {
-    /** Side of the rounded square, GUI pixels. */
     public static final int BOX = 14;
-    /** Gap between the box and the label. */
     private static final int LABEL_GAP = 8;
-    /** Check glyph size when fully scaled in. */
     private static final float CHECK_SIZE = 10.0f;
-    /** Time-normalised check scale-in speed (per second); ~95% in 100 ms. */
     private static final float CHECK_SPEED = 30.0f;
-    /** Frame gap cap so a stall never teleports the ease. */
     private static final float MAX_FRAME_SECONDS = 0.1f;
-    /** Corner radius of the box. */
     private static final float RADIUS = 4.0f;
 
     private final Supplier<Boolean> getter;

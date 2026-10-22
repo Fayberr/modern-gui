@@ -30,16 +30,11 @@ import java.util.function.IntSupplier;
  * brightens its circle and label; the selected row shows the accent fill with an inner dot.
  */
 public class RadioGroup extends AbstractButton {
-    /** Diameter of the radio circle. */
     public static final int CIRCLE = 14;
-    /** Row height. */
     public static final int ROW_HEIGHT = 18;
-    /** Gap between the circle and its label. */
     private static final int LABEL_GAP = 6;
-    /** Gap between rows (vertical) or row columns (horizontal). */
     private static final int VERTICAL_GAP = 4;
     private static final int HORIZONTAL_GAP = 16;
-    /** Radius of the inner selection dot. */
     private static final float DOT_RADIUS = 4.0f;
 
     private final List<Component> options;
