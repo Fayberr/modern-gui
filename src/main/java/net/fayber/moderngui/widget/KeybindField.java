@@ -30,13 +30,10 @@ import java.util.function.Supplier;
  * event that confirms the bind, so the press that starts listening does not also set it.
  */
 public class KeybindField extends AbstractButton {
-    /** Widget height. */
     public static final int HEIGHT = 26;
-    /** Mouse codes passed through {@code onChange} start here: {@code MOUSE_CODE_BASE + button}. */
+    /** Mouse codes via {@code onChange} start here: {@code MOUSE_CODE_BASE + button}. */
     public static final int MOUSE_CODE_BASE = 1000;
-    /** Corner radius of the field card. */
     private static final float RADIUS = 5.0f;
-    /** Period of the listening-state border pulse, in milliseconds. */
     private static final long PULSE_MS = 400;
 
     private final Supplier<Integer> getter;

@@ -53,7 +53,7 @@ public class FlatButton extends AbstractButton {
     protected int fillHoverOverride = -1;
     protected int textOverride = -1;
     protected int textHoverOverride = -1;
-    /** Corner radius override for the disabled state is not needed; the alpha handles it. */
+    // No corner-radius override for the disabled state; the alpha handles it.
 
     public FlatButton(int x, int y, int w, int h, Component message, Runnable onPress) {
         this(x, y, w, h, message, onPress, Style.GHOST);

@@ -12,10 +12,6 @@ Install Modern GUI and Fabric API when another mod requires them. The command
 
 ## Development
 
-Requires JDK 25 and Gradle 9.7.1. Run `./gradlew build`; the jars are written to
-`build/libs/`. Use `./gradlew publishToMavenLocal` to make the library available
-to neighboring mod projects.
-
 The local Maven coordinate for this branch is
 `net.fayber:modern-gui:1.0.14+26.3`. The Minecraft suffix keeps it separate from
 builds for other game versions. Consumers should declare the library as a Fabric
@@ -32,7 +28,9 @@ notices. See the license files included in this repository and the built jar.
 
 ## Build from a fresh checkout
 
-Use JDK 25 and the included Gradle wrapper. Select the same Minecraft branch in both
+Use JDK 25 and the included Gradle wrapper. Run `./gradlew build`; the jars are
+written to `build/libs/`. Use `./gradlew publishToMavenLocal` to make the
+library available to neighboring mod projects. Select the same Minecraft branch in both
 [Modern GUI](https://github.com/Fayberr/modern-gui) and
 [Modern Config](https://github.com/Fayberr/modern-config): `fabric/26.1.x`, `fabric/26.2` or `fabric/26.3`.
 
