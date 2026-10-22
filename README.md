@@ -80,3 +80,16 @@ unavailable.
 `./gradlew runClient -PmgPreview=true` opens the showcase; add `-PmgPreviewShot=/tmp/a.png`
 `-PmgPreviewTab=3` `-PmgPreviewFont=inter_display` to save a screenshot of a tab and quit.
 `./gradlew clean build --offline` is the gate (includes the unit tests).
+
+## Build from a fresh checkout
+
+Use JDK 25 and the included Gradle wrapper. Select the same Minecraft branch in both
+[Modern GUI](https://github.com/Fayberr/modern-gui) and
+[Modern Config](https://github.com/Fayberr/modern-config): `fabric/26.1.x`, `fabric/26.2` or `fabric/26.3`.
+
+1. In Modern GUI, run `./gradlew build publishToMavenLocal`.
+2. In Modern Config, run `./gradlew test build publishToMavenLocal`.
+
+On Windows, use `gradlew.bat`. Artifacts are written to `build/libs`. The 26.2 and 26.3
+Maven coordinates include the Minecraft version suffix; see `gradle.properties` and
+the `publishing` block in `build.gradle`. The jar's mod version has no Minecraft suffix.
